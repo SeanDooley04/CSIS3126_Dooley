@@ -1,0 +1,41 @@
+Design Project Idea
+
+Problem statement:
+People are bored and they want a fun online board game to play.
+
+
+Goal: 
+	Create an online board game inspired by Board Game Online
+
+Online Board Game using HTML with PHP as a backend 
+
+The user can use a guest account or create an account that saves the results from previous games and friends list
+
+User can …
+-	Sign in or use a guest account
+-	Create a game
+-	Invite friends in app or send an invite link
+-	Play the game
+-	Roll the dice to move forward
+-	Whoever reaches the end wins
+If I have time to implement:
+-	Players can get coins after their turn
+-	Use coins to buy items
+-	Could have an actual game board with different paths instead of a straight line
+-	I want the game to support at least 4 players
+
+Needs some kind of polling or pushing to update the game state
+
+Data I need to store:
+-	Usernames 
+-	Hashed Passwords
+-	Active game links
+-	The users in each game including registered users and guest accounts
+-	Player position on the board
+-	Each player’s inventory of items
+-	Each player’s number of coins
+-	The results of each game including who won 
+-	
+
+Use jquery
+
