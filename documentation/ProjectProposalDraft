@@ -1,8 +1,14 @@
-Design Project Idea
+Design Project Proposal
+
+Sean Dooley
+January 22, 2025
+Project title: Web Board Game
+
+My Qualifications and strengths:
+I have experience using html, php, and sql in previous projects. 
 
 Problem statement:
 People are bored and they want a fun online board game to play.
-
 
 Goal: 
 	Create an online board game inspired by Board Game Online
@@ -35,7 +41,4 @@ Data I need to store:
 -	Each player’s inventory of items
 -	Each player’s number of coins
 -	The results of each game including who won 
--	
-
-Use jquery
 
