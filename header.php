@@ -9,7 +9,7 @@
             text-transform: uppercase;
         }
         .rainbow-letters span:nth-child(10n + 1) {
-            color: #ef5350;`
+            color: #ef5350;
         }
         .rainbow-letters span:nth-child(10n + 2) {
             color: #ab47bc;
@@ -50,9 +50,14 @@
 
 		}
 		body{
-			font-family: Calibri;
+			
+			font-family: sans-serif;
+			font-size: 2rem;
+            text-transform:uppercase;
+            color: #4caf50 ;
+            text-shadow: -2px 2px black;
 			background-color: lightgray;
-			color: green;
+			
 		}
 		table{
 			
@@ -61,7 +66,13 @@
 			
 		}
 		a{
-			color: darkolivegreen;
+			
+			font-family: sans-serif;
+			font-size: 2rem;
+            text-transform:uppercase;
+            color: #4caf50 ;
+            text-shadow: -2px 2px black;
+			background-color: lightgray;
 		}
 
 	</style>
