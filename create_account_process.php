@@ -34,8 +34,8 @@ if ($errormessage != "") {
     die();
 }
 
-
-mysqli_query($connection, "insert into users (user_email,user_password_hash) values ('$user_email','$user_password')");
+$user_password_hash = password_hash($user_password, PASSWORD_DEFAULT);
+mysqli_query($connection, "insert into users (user_email,user_password_hash) values ('$user_email','$user_password_hash')");
 $user_result = mysqli_query($connection, "select * from users where user_email = '$user_email'");
 
 

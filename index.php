@@ -24,7 +24,7 @@
         
     }
     else{
-        echo"Hello '$user_email'<br />";
+        echo"Hello, $user_email<br />";
         echo"<a href='logout.php'>Logout</a><br />";
         
     }

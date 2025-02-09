@@ -19,12 +19,11 @@
             color: #651fff;
         }
 
-        .rainbow-letters span:nth-child(10n + 5){
-        color: #3949ab;
-        }
-
         .rainbow-letters span:nth-child(10n + 4) {
         color: #2196f3;
+        }
+        .rainbow-letters span:nth-child(10n + 5){
+        color: #3949ab;
         }
 
         .rainbow-letters span:nth-child(10n + 6){
@@ -37,6 +36,9 @@
 
         .rainbow-letters span:nth-child(10n + 8){
         color: #ffc107;
+        }
+        .rainbow-letters span:nth-child(10n + 9){
+        color: pink;
         }
 
         h1{
