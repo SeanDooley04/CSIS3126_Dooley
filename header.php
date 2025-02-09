@@ -44,18 +44,18 @@
 			font-family: sans-serif;
 			font-size: 3rem;
             text-transform:uppercase;
-            
+            color: white;
             text-shadow: -4px 4px black;
 
 
 		}
 		body{
 			
-			font-family: sans-serif;
+			font-family: arial;
 			font-size: 2rem;
-            text-transform:uppercase;
-            color: #4caf50 ;
-            text-shadow: -2px 2px black;
+            
+            color: black ;
+            
 			background-color: lightgray;
 			
 		}
@@ -67,13 +67,14 @@
 		}
 		a{
 			
-			font-family: sans-serif;
+			font-family: Arial;
 			font-size: 2rem;
-            text-transform:uppercase;
-            color: #4caf50 ;
-            text-shadow: -2px 2px black;
+            
 			background-color: lightgray;
 		}
+        p{
+            
+        }
 
 	</style>
 		<title>Web Board Game</title>
