@@ -3,10 +3,11 @@
 
 
 include("global.php");
-session_start();
+
 
 
 $user_email = mysqli_real_escape_string($connection, $_POST["user_email"]);
+$username = mysqli_real_escape_string($connection, $_POST["username"]);
 $user_password = mysqli_real_escape_string($connection, $_POST["user_password"]);
 $user_emails_list = mysqli_query($connection, "select user_email from users");
 $user_logged_in = 1;
@@ -35,17 +36,13 @@ if ($errormessage != "") {
 }
 
 $user_password_hash = password_hash($user_password, PASSWORD_DEFAULT);
-mysqli_query($connection, "insert into users (user_email,user_password_hash) values ('$user_email','$user_password_hash')");
+mysqli_query($connection, "insert into users (user_email,user_password_hash,username) values ('$user_email','$user_password_hash','$username')");
 $user_result = mysqli_query($connection, "select * from users where user_email = '$user_email'");
 
 
 $user_row = mysqli_fetch_assoc($user_result);
 
 $user_id = $user_row["user_id"];
-
-
-
-$_SESSION['user_login'] = $user_email;
 $_SESSION['user_id'] = $user_id;
 
 

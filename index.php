@@ -3,31 +3,26 @@
 
 
 <?php
-    session_start();
-    if(!isset($_SESSION['user_login'])){
-        $logged_in = 0;
-    }
-    else{
-        $logged_in = 1;
-        $user_email = $_SESSION['user_login'];
-    }
-
-    include("header.php");
     include("global.php");
+    include("header.php");
 
-
-
-
-    if ($logged_in == 0){
+    if(!isset($_SESSION['user_id'])){
         echo"<a href='create_account.php'>Create a new account</a><br />";
         echo"<a href='login.php'>Login</a><br />";
-        
     }
     else{
-        echo"Hello, $user_email<br />";
+       
+        $user_id = $_SESSION['user_id'];
+        $result = mysqli_query($connection,"select username from users where user_id ='$user_id'");
+        $user_row = mysqli_fetch_assoc($result);
+        $username = $user_row['username'];
+        echo"Hello, $username<br />";
         echo"<a href='logout.php'>Logout</a><br />";
         
     }
+
+        
+    
 
 ?>
 <h1>Game Instructions </h1>

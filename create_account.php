@@ -6,7 +6,7 @@ include("header.php");
             <?php echo $errormessage; ?>
         </div>
         
-
+        Username: <input type="text" name="username" value="<?php echo htmlspecialchars($_POST["username"], ENT_QUOTES);?>"><br />
         Email Address: <input type="email" name="user_email" value="<?php echo htmlspecialchars($_POST["user_email"], ENT_QUOTES);?>"><br />
         Password: <input type="text" name="user_password" value="<?php echo htmlspecialchars($_POST["user_password"], ENT_QUOTES);?>"><br />
         <input type="submit" value="Save new email and password">

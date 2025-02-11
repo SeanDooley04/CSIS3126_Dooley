@@ -61,12 +61,7 @@
 			background-color: lightgray;
 			
 		}
-		table{
-			
-			color: black;
-			background-color: white;
-			
-		}
+		
 		a{
 			
 			font-family: Arial;
@@ -75,7 +70,8 @@
 			background-color: lightgray;
 		}
         p{
-            
+            width:80vw;
+            margin: 0 auto;
         }
 
 	</style>
