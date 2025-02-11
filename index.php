@@ -1,14 +1,10 @@
-
-
-
-
 <?php
     include("global.php");
     include("header.php");
 
     if(!isset($_SESSION['user_id'])){
-        echo"<a href='create_account.php'>Create a new account</a><br />";
-        echo"<a href='login.php'>Login</a><br />";
+        echo"<p><a href='create_account.php'>Create a new account</a><br />";
+        echo"<a href='login.php'>Login</a></p><br />";
     }
     else{
        
@@ -16,15 +12,12 @@
         $result = mysqli_query($connection,"select username from users where user_id ='$user_id'");
         $user_row = mysqli_fetch_assoc($result);
         $username = $user_row['username'];
-        echo"Hello, $username<br />";
-        echo"<a href='logout.php'>Logout</a><br />";
+        echo"<p>Hello, $username</p><br />";
+        echo"<p><a href='logout.php'>Logout</a></p><br />";
         
     }
-
-        
-    
-
 ?>
+<p><a href='start_game.php'>Start Game</a></p><br>
 <h1>Game Instructions </h1>
 <p>
 -	at the start of the game each player rolls a dice to see who moves first, the highest number goes first<br /> 

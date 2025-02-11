@@ -66,8 +66,11 @@
 			
 			font-family: Arial;
 			font-size: 2rem;
-            
+            width: 80vw;
+            margin: 0 auto;
 			background-color: lightgray;
+            color: white;
+            text-shadow: -2px 2px black;
 		}
         p{
             width:80vw;
