@@ -14,6 +14,7 @@
         justify-content: center;
 
     }
+    
     .flex-container {
         position:absolute;
         border: 1px black;
@@ -229,6 +230,17 @@
         
         
     </div>
+        <p id="rollDisplay"></p>
+        <p><button onclick="rollDice()">Roll dice!</button></p>
+    <div>
+        
+    </div>
+
+    <script>
+        function rollDice() {
+            document.getElementById("rollDisplay").innerHTML = Math.floor(Math.random()*7) + 1;
+        }
+    </script>
 <?php
 include('footer.php');
 ?>
