@@ -9,9 +9,10 @@
     
     .gameBoard{
         
-        margin: 5vw auto;
+        margin: 0 auto;
         display: flex;
         justify-content: center;
+
 
     }
     
@@ -26,14 +27,15 @@
         
     }
     .flex-box {
-        width   : 3vw;
-        height  : 3vw;
+        width   : 2vw;
+        height  : 2vw;
         border  : 1px solid black;
         color   : black;
         display : flex;
         align-items: center;
         justify-content: center;
         background-size: 100%;
+        flex-wrap: wrap;
         
         
     }
@@ -85,6 +87,11 @@
         display: flex;
         flex-direction: row;
     }
+
+
+    
+    /*
+    */
     
     
     .blue {
@@ -97,43 +104,86 @@
         background-color: gray;
     }
     .toprightcorner{
-        background-image: url("toprightcorner.jpg");
+        background-image: url("images/board/toprightcorner.jpg");
         
     }
     .topsplitpath{
-        background-image: url("topsplitpath.jpg");
+        background-image: url("images/board/topsplitpath.jpg");
         
     }
     .topleftcorner{
-        background-image: url("topleftcorner.jpg");
+        background-image: url("images/board/topleftcorner.jpg");
     }
     .middleleftcorner{
-        background-image: url("middleleftarrow.jpg");
+        background-image: url("images/board/middleleftarrow.jpg");
     }
     .centersplitpath{
-        background-image: url("centersplitpath.jpg");
+        background-image: url("images/board/centersplitpath.jpg");
     }
     .downarrow{
-        background-image: url("downarrow.jpg");
+        background-image: url("images/board/downarrow.jpg");
     }
     .leftupsplitpath{
-        background-image: url("leftupsplitpath.jpg");
+        background-image: url("images/board/leftupsplitpath.jpg");
     }
     .bottomleftcorner{
-        background-image: url("bottomleftcorner.jpg");
+        background-image: url("images/board/bottomleftcorner.jpg");
     }
     .bottomrightcorner{
-        background-image: url("bottomrightcorner.jpg") ;
+        background-image: url("images/board/bottomrightcorner.jpg") ;
     }
+
+
+    .diceroll{
+        justify-content: center;
+        text-align: center;
+        visibility: hidden;
+    }
+
+    .gamepiece{
+        width:  1vw;
+        height: 50%;
+        background-size: 100%;
+    }
+    .lightbluepiece{
+        background-image: url("images/pieces/lightbluegamepiece.png");
+        visibility: hidden;
+        
+    }
+    .pinkpiece{
+        background-image: url("images/pieces/pinkgamepiece.png");
+        visibility: hidden;
+    }
+    .greenpiece{
+        background-image: url("images/pieces/greengamepiece.png");
+        visibility: hidden;
+
+    }
+    .whitepiece{
+        background-image: url("images/pieces/whitegamepiece.png");
+        visibility: hidden;
+        
+    }
+    
+    
     
     
 </style>
+    
     <div class="gameBoard">
+        
         <class="flex-container">
+
             <div class="row row1">
                 
                 <div class="flex-box toprightcorner" id="space1"></div>
-                <div class="flex-box gray" id="space2"></div>
+                <div class="flex-box gray" id="space2">
+                    <div class="gamepiece lightbluepiece" id = "b2"></div>
+                    <div class="gamepiece pinkpiece" id = "p2"></div>
+                    <div class="gamepiece greenpiece" id = "g2"></div>
+                    <div class="gamepiece whitepiece" id = "w2"></div>
+                </div>
+                
                 <div class="flex-box red" id="space3"></div>
                 <div class="flex-box blue" id="space4"></div>
                 <div class="flex-box gray" id="space5"></div>
@@ -230,16 +280,34 @@
         
         
     </div>
+    <p><button onclick="startGame()">start game</button></p>
+    
+
+    <div class="diceroll">
         <p id="rollDisplay"></p>
-        <p><button onclick="rollDice()">Roll dice!</button></p>
-    <div>
+        <p><button id="dicerollButton" class = "dicerollButton" onclick="rollDice()">Roll dice!</button></p>
         
     </div>
-
+    
     <script>
         function rollDice() {
             document.getElementById("rollDisplay").innerHTML = Math.floor(Math.random()*7) + 1;
         }
+        function startGame(){
+            var x = document;
+            
+            x.getElementById("w2").style.visibility = "visible";
+            x.getElementById("g2").style.visibility = "visible";
+            x.getElementById("b2").style.visibility = "visible";
+            x.getElementById("p2").style.visibility = "visible";
+            x.getElementById("dicerollButton").style.visibility = "visible";
+            x.getElementById("rollDisplay").style.visibility = "visible";
+        
+        }
+
+
+
+
     </script>
 <?php
 include('footer.php');
