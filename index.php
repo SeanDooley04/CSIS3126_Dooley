@@ -17,7 +17,10 @@
         
     }
 ?>
+<!-- -->
 <p><a href='start_game.php'>Start Game</a></p><br>
+<!-- -->
+<p><a href='game_setup.php'>Setup Game</a></p><br>
 <h1>Game Instructions </h1>
 <p>
 -	at the start of the game each player rolls a dice to see who moves first, the highest number goes first<br /> 

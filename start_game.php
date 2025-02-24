@@ -27,8 +27,8 @@
         
     }
     .flex-box {
-        width   : 2vw;
-        height  : 2vw;
+        width   : 2.5vw;
+        height  : 2.5vw;
         border  : 1px solid black;
         color   : black;
         display : flex;
@@ -90,8 +90,7 @@
 
 
     
-    /*
-    */
+    
     
     
     .blue {
@@ -141,8 +140,8 @@
     }
 
     .gamepiece{
-        width:  1vw;
-        height: 50%;
+        width:  1.25vw;
+        height: 45%;
         background-size: 100%;
     }
     .lightbluepiece{
@@ -280,12 +279,15 @@
         
         
     </div>
+    
     <p><button onclick="startGame()">start game</button></p>
+
     
 
     <div class="diceroll">
         <p id="rollDisplay"></p>
         <p><button id="dicerollButton" class = "dicerollButton" onclick="rollDice()">Roll dice!</button></p>
+        
         
     </div>
     
