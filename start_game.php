@@ -174,7 +174,9 @@
         <class="flex-container">
 
             <div class="row row1">
-                
+                <!--each space on the board has one of the gamepieces on it invisible by default, 
+                -->
+
                 <div class="flex-box toprightcorner" id="space1">
                     <div class="gamepiece lightbluepiece"></div>
                     <div class="gamepiece pinkpiece"></div>
@@ -622,7 +624,7 @@
     
     <p><button onclick="startGame()">start game</button></p>
     
-    <?php 
+    <?php //I couldn't get an html button to run a php function so I'm using this as a work around
         if(array_key_exists('resetbutton', $_POST)) {
             resetGame($connection);
         }
@@ -642,14 +644,19 @@
         
     </div>
     <?php
+    //fetches the gamestate from the database
     $gamestate_query = mysqli_query($connection, "select * from gamestate");
+
     $gamestate = mysqli_fetch_assoc($gamestate_query);
+    //I only did it this way because I made the id's for each space start with "space" then the number
+    //this was faster than changing every space id to just the number
     $player1_pos = "space";
     $player1_pos = $player1_pos . $gamestate["player1_pos"];
-    
+    //gets player1's color from the query
     $player1_color = $gamestate["player1_color"];
     
     function resetGame($connection){
+        //clears the gamestate database to start a fresh game, for testing
         mysqli_query($connection, "delete from gamestate" );
     }
 
@@ -667,15 +674,14 @@
         
         function startGame(){
             var x = document;
+            //this gets player1's positon from the php
             var player1_pos = "<?php echo $player1_pos; ?>";
+            //the collection is of the game pieces contained in the space at the playeer's position
             const collection = x.getElementById(player1_pos).children;
-            
+            //I can then specify a specific game piece on that space to be turned visible
+            //still need to make it work for each player and know which piece to turn visible
             collection[1].style.visibility = "visible";
-            /*
-            x.getElementById("g2").style.visibility = "visible";
-            x.getElementById("b2").style.visibility = "visible";
-            x.getElementById("p2").style.visibility = "visible";
-            */
+        
             x.getElementById("dicerollButton").style.visibility = "visible";
             x.getElementById("rollDisplay").style.visibility = "visible";
             
