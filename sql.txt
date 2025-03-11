@@ -30,5 +30,5 @@ CREATE TABLE gamestate (
     player2_stars int(11) DEFAULT 0,
     player3_stars int(11) DEFAULT 0,
     player4_stars int(11) DEFAULT 0,
-    whose_turn(4)
+    whose_turn int(1)
 )
