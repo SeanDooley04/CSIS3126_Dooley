@@ -1,5 +1,5 @@
 <?php
-include("header.php");
+
 include("global.php");
 
 $user_color = $_POST["color"];
