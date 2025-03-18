@@ -1,5 +1,6 @@
 
 <?php
+    session_start();
     include('header.php');
     include('global.php');
 ?>
@@ -625,7 +626,7 @@
     </div>
     
     <p><button onclick="startGame()">start game</button></p>
-    
+    <p id="rollDisplay"></p>
 
     <?php //I couldn't get an html button to run a php function so I'm using this as a work around
         if(array_key_exists('resetbutton', $_POST)) {
@@ -637,6 +638,13 @@
         <input type="submit" name="resetbutton" class="button" value="Reset Button" />
     </form>
 
+
+    
+
+
+
+    
+
     <form action="movePiece_process.php" method="post">
         <input type="text" id="movetext" name="movetext" />
         <input type="submit" name="changepos" value="ChangePos" />
@@ -645,12 +653,7 @@
 
     
 
-    <div class="diceroll">
-        <p id="rollDisplay"></p>
-        <p><button id="dicerollButton" class = "dicerollButton" onclick="rollDice()">Roll dice!</button></p>
-        
-        
-    </div>
+    
     <?php
     //fetches the gamestate from the database
     $gamestate_query = mysqli_query($connection, "select * from gamestate");
@@ -667,12 +670,60 @@
     $player2_color = $gamestate["player2_color"];
     $player3_color = $gamestate["player3_color"];
     $player4_color = $gamestate["player4_color"];
-    //gets player1's color from the query
+    $user_player_num = $_SESSION["user_player_num"];
+    if($user_player_num == 1){
+        $user_player_pos = $player1_pos;
+    }elseif($user_player_num == 2){
+        $user_player_pos = $player2_pos;
+    }elseif($user_player_num == 3){
+        $user_player_pos = $player3_pos;
+    }elseif($user_player_num == 4){
+        $user_player_pos = $player4_pos;
+    }
     
     
+    if(array_key_exists('rolldicebutton', $_POST)) {
+        rollDice($connection);
+    }
+    ?>
+    <form method="post">
+        <input type="submit" name="rolldicebutton" class="button" value="rolldice Button" />
+    </form>
+
+
+    <?php
+    //php reset function
     function resetGame($connection){
         //clears the gamestate database to start a fresh game, for testing
         mysqli_query($connection, "delete from gamestate" );
+    }
+    
+    function rollDice($connection){
+        $GLOBALS ['roll'] = rand(1,6);
+        $rollcount = $GLOBALS['roll'];
+        while ($rollcount > 0){
+            moveForward();
+            $rollcount = $rollcount - 1;
+        }
+        $player_pos = $GLOBALS['user_player_pos'];
+        if($GLOBALS['user_player_num'] == 1){
+            mysqli_query($connection, "UPDATE gamestate set player1_pos = '$player_pos'");
+            $GLOBALS['player1_pos'] = $player_pos;
+        }elseif($GLOBALS['user_player_num'] == 2){
+            mysqli_query($connection, "UPDATE gamestate set player2_pos = '$player_pos'");
+            $GLOBALS['player2_pos'] = $player_pos;
+        }elseif($GLOBALS['user_player_num'] == 3){
+            mysqli_query($connection, "UPDATE gamestate set player3_pos = '$player_pos'");
+            $GLOBALS['player3_pos'] = $player_pos;
+        }elseif($GLOBALS['user_player_num'] == 4){
+            mysqli_query($connection, "UPDATE gamestate set player4_pos = '$player_pos'");
+            $GLOBALS['player4_pos'] = $player_pos;
+        }
+    }
+    function moveForward(){
+        $player_pos = (int)$GLOBALS['user_player_pos'];
+        $player_pos += 1;
+        $GLOBALS['user_player_pos'] = (string)$player_pos;
     }
 
     ?>
@@ -690,6 +741,9 @@
             var player2_color = "<?php echo $player2_color; ?>";
             var player3_color = "<?php echo $player3_color; ?>";
             var player4_color = "<?php echo $player4_color; ?>";
+            var rollnum = "<?php echo $roll; ?>";
+            
+            x.getElementById("rollDisplay").innerHTML = "Dice number: " + rollnum;
             
             //the collection is of the game pieces contained in the  at the playeer's position
             const player1space = x.getElementById(player1_pos).children;
@@ -715,16 +769,11 @@
                 player4space[3].className = "gamepiece "+player4_color+"piece";
             }
             
-            
-        }
-        function rollDice() {
-            document.getElementById("rollDisplay").innerHTML = Math.floor(Math.random()*7) + 1;
         }
         
         
         function startGame(){
             var x = document;
-            x.getElementById("dicerollButton").style.visibility = "visible";
             x.getElementById("rollDisplay").style.visibility = "visible";
             
         

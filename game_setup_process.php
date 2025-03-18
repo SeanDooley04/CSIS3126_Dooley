@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 include("global.php");
 
 $user_color = $_POST["color"];
@@ -20,16 +20,19 @@ if($user_color == $player1color or $user_color == $player2color or $user_color =
 $user_player_num = 0;
 
 if(is_null($gamestate["player1_uname"])){
-    $user_player_num = 1;
+    $_SESSION["user_player_num"] = 1;
+    
     $username = "guest1";
 }elseif(is_null($gamestate["player2_uname"])){
-    $user_player_num = 2;
+    $_SESSION["user_player_num"] = 2;
+    
     $username ="guest2";
 }elseif(is_null($gamestate["player3_uname"])){
-    $user_player_num = 3;
+    $_SESSION["user_player_num"] = 3;
+    
     $username = "guest3";
 }elseif(is_null($gamestate["player4_uname"])){
-    $user_player_num = 4;
+    $_SESSION["user_player_num"] = 4;
     $username = "guest4";
 }else{
     $errormessage .= "game is full";
@@ -55,13 +58,13 @@ if($errormessage != "") {
     die();
 }
 
-if($user_player_num == 1){
+if($_SESSION["user_player_num"] == 1){
     mysqli_query($connection, "insert into gamestate(player1_uname, player1_color) values ('$username', '$user_color')");
-}elseif($user_player_num == 2){
+}elseif($_SESSION["user_player_num"] == 2){
     mysqli_query($connection, "UPDATE gamestate set player2_uname ='$username' , player2_color = '$user_color'");
-}elseif($user_player_num == 3){
+}elseif($_SESSION["user_player_num"] == 3){
     mysqli_query($connection, "UPDATE gamestate set player3_uname ='$username' , player3_color = '$user_color'");
-}elseif($user_player_num == 4){
+}elseif($_SESSION["user_player_num"] == 4){
     mysqli_query($connection, "UPDATE gamestate set player4_uname ='$username' , player4_color = '$user_color'");
 }
 
