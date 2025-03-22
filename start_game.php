@@ -619,7 +619,6 @@
                     <div class="gamepiece"></div>
                 </div>
             </div>
-            
         </div>
         
         
@@ -649,6 +648,9 @@
         <input type="text" id="movetext" name="movetext" />
         <input type="submit" name="changepos" value="ChangePos" />
     </form>
+
+    
+    
     
 
     
@@ -693,12 +695,17 @@
 
     <?php
     //php reset function
+
+    
+
+
     function resetGame($connection){
         //clears the gamestate database to start a fresh game, for testing
         mysqli_query($connection, "delete from gamestate" );
     }
     
     function rollDice($connection){
+
         $GLOBALS ['roll'] = rand(1,6);
         $rollcount = $GLOBALS['roll'];
         while ($rollcount > 0){
@@ -706,6 +713,13 @@
             $rollcount = $rollcount - 1;
         }
         $player_pos = $GLOBALS['user_player_pos'];
+        if ($player_pos == 13){
+            choosePathForm();
+        }
+        while($GLOBALS['countremaining'] > 0){
+            moveForward();
+            $GLOBALS['countremaining'] -= 1;
+        }
         if($GLOBALS['user_player_num'] == 1){
             mysqli_query($connection, "UPDATE gamestate set player1_pos = '$player_pos'");
             $GLOBALS['player1_pos'] = $player_pos;
@@ -719,11 +733,33 @@
             mysqli_query($connection, "UPDATE gamestate set player4_pos = '$player_pos'");
             $GLOBALS['player4_pos'] = $player_pos;
         }
+        
     }
     function moveForward(){
         $player_pos = (int)$GLOBALS['user_player_pos'];
-        $player_pos += 1;
-        $GLOBALS['user_player_pos'] = (string)$player_pos;
+        switch($player_pos){
+            case 58:
+                $player_pos = 1;
+                $GLOBALS['user_player_pos'] = (string)$player_pos;
+                break;
+            case 13:
+                $_SESSION['countremaining'] = $GLOBALS['rollcount'];
+                $GLOBALS['user_player_pos'] = (string)$player_pos;
+                break;
+            default:
+                $player_pos += 1;
+                $GLOBALS['user_player_pos'] = (string)$player_pos;
+        }
+    }
+
+    function choosePathForm(){
+        echo '<form action="choosePath_process.php" method="POST">';
+        echo '<input type="radio" id = "up" name="direction" value ="up" >';
+        echo '<label for="up">Up</label><br>';
+        echo '<input type="radio" id = "right" name="direction" value ="right" >';
+        echo '<label for="right">Right</label><br>';
+        echo '<input type="submit" value="Go">';
+        echo '</form>';
     }
 
     ?>
