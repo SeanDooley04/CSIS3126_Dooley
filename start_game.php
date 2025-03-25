@@ -705,20 +705,22 @@
     }
     
     function rollDice($connection){
-
+        $_SESSION['countremaining'] = 0;
         $GLOBALS ['roll'] = rand(1,6);
-        $rollcount = $GLOBALS['roll'];
-        while ($rollcount > 0){
+        $GLOBALS ['rollcount'] = $GLOBALS['roll'];
+        while ($GLOBALS ['rollcount'] > 0){
             moveForward();
-            $rollcount = $rollcount - 1;
+            $GLOBALS['rollcount'] = $GLOBALS ['rollcount'] - 1;
         }
         $player_pos = $GLOBALS['user_player_pos'];
-        if ($player_pos == 13){
-            choosePathForm();
-        }
-        while($GLOBALS['countremaining'] > 0){
-            moveForward();
-            $GLOBALS['countremaining'] -= 1;
+        $_SESSION['pos'] = (int)$player_pos;
+        if ($player_pos == 13 and $_SESSION['countremaining'] > 0){
+            choosePathForm("up", "right");
+
+        }elseif ($player_pos == 53 and $_SESSION['countremaining'] > 0){
+            choosePathForm("left", "right");
+        }elseif ($player_pos == 31 and $_SESSION['countremaining'] > 0){
+            choosePathForm("up", "left");
         }
         if($GLOBALS['user_player_num'] == 1){
             mysqli_query($connection, "UPDATE gamestate set player1_pos = '$player_pos'");
@@ -742,8 +744,28 @@
                 $player_pos = 1;
                 $GLOBALS['user_player_pos'] = (string)$player_pos;
                 break;
+            case 42:
+                $player_pos = 7;
+                $GLOBALS['user_player_pos'] = (string)$player_pos;
+                break;
+            case 47:
+                $player_pos = 13;
+                $GLOBALS['user_player_pos'] = (string)$player_pos;
+                break;
+            case 69:
+                $player_pos = 19;
+                $GLOBALS['user_player_pos'] = (string)$player_pos;
+                break;        
             case 13:
-                $_SESSION['countremaining'] = $GLOBALS['rollcount'];
+                getRemaining();
+                $GLOBALS['user_player_pos'] = (string)$player_pos;
+                break;
+            case 53:
+                getRemaining();
+                $GLOBALS['user_player_pos'] = (string)$player_pos;
+                break;
+            case 31:
+                getRemaining();
                 $GLOBALS['user_player_pos'] = (string)$player_pos;
                 break;
             default:
@@ -752,14 +774,30 @@
         }
     }
 
-    function choosePathForm(){
+    function choosePathForm($direction1, $direction2){
         echo '<form action="choosePath_process.php" method="POST">';
-        echo '<input type="radio" id = "up" name="direction" value ="up" >';
-        echo '<label for="up">Up</label><br>';
-        echo '<input type="radio" id = "right" name="direction" value ="right" >';
-        echo '<label for="right">Right</label><br>';
+        if($direction1 == "up"){
+            echo '<input type="radio" id = "up" name="direction" value ="up" >';
+            echo '<label for="up">Up</label><br>';
+        }elseif($direction1 == "left"){
+            echo '<input type="radio" id = "left" name="direction" value ="left" >';
+            echo '<label for="up">Left</label><br>';
+        }
+        if($direction2 == "right"){
+            echo '<input type="radio" id = "right" name="direction" value ="right" >';
+            echo '<label for="right">Right</label><br>';
+        }elseif($direction2 == "left"){
+            echo '<input type="radio" id = "left" name="direction" value ="left" >';
+            echo '<label for="up">Left</label><br>';
+        }
         echo '<input type="submit" value="Go">';
         echo '</form>';
+    }
+
+    function getRemaining(){
+        if($GLOBALS['rollcount'] > $_SESSION ['countremaining']){
+            $_SESSION ['countremaining'] = $GLOBALS['rollcount'];
+        }
     }
 
     ?>
@@ -778,8 +816,9 @@
             var player3_color = "<?php echo $player3_color; ?>";
             var player4_color = "<?php echo $player4_color; ?>";
             var rollnum = "<?php echo $roll; ?>";
-            
-            x.getElementById("rollDisplay").innerHTML = "Dice number: " + rollnum;
+            var remainingRollCount = "<?php echo $_SESSION['countremaining']; ?>";
+
+            x.getElementById("rollDisplay").innerHTML = "Dice number: " + rollnum + " remaining: " + remainingRollCount;
             
             //the collection is of the game pieces contained in the  at the playeer's position
             const player1space = x.getElementById(player1_pos).children;
