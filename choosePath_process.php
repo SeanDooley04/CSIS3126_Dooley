@@ -48,7 +48,15 @@ while($_SESSION['countremaining']> 0){
     }
     $_SESSION['countremaining'] -= 1;
 }
-
+if($_SESSION['countremaining'] == 0){
+    if($_SESSION['whose_turn'] == 4){
+        $_SESSION['whose_turn'] = 1;
+    }else{
+        $_SESSION['whose_turn'] +=1;
+    }
+    $whose_turn = $_SESSION['whose_turn'];
+    mysqli_query($connection, "UPDATE gamestate set whose_turn = '$whose_turn'");
+}
 
 
 if($_SESSION['user_player_num'] == 1){

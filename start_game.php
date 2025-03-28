@@ -4,6 +4,12 @@
     include('header.php');
     include('global.php');
 ?>
+<script>
+    if ( window.history.replaceState ){
+        window.history.replaceState(null, null, window.location.href );
+    }
+</script>
+
 <p><a href='index.php'>Home</a></p>
 <style>
     
@@ -164,7 +170,28 @@
         visibility: hidden;
         
     }
+    .lightgreenpiece{
+        background-image: url("images/pieces/lightgreengamepiece.png");
+        visibility: hidden;
+    }
+    .lavenderpiece{
+        background-image: url("images/pieces/lavendergamepiece.png");
+        visibility: hidden;
+    }
+    form[id="rolldiceform"] {
+        display: none;
+        width:80vw;
+        margin: 0 auto;
+    }
+    form{
+        width:80vw;
+        margin: 0 auto;
+    }
+
     
+
+    
+
 
     
     
@@ -633,7 +660,10 @@
         }
     ?>
     
-    <form method="post">
+
+
+
+    <form method="post" id="resetbuttonform">
         <input type="submit" name="resetbutton" class="button" value="Reset Button" />
     </form>
 
@@ -644,7 +674,7 @@
 
     
 
-    <form action="movePiece_process.php" method="post">
+    <form action="movePiece_process.php" method="post" id="movepieceform">
         <input type="text" id="movetext" name="movetext" />
         <input type="submit" name="changepos" value="ChangePos" />
     </form>
@@ -682,13 +712,15 @@
     }elseif($user_player_num == 4){
         $user_player_pos = $player4_pos;
     }
+
+    $_SESSION['whose_turn'] = $gamestate["whose_turn"];
     
     
     if(array_key_exists('rolldicebutton', $_POST)) {
         rollDice($connection);
     }
     ?>
-    <form method="post">
+    <form method="post" id="rolldiceform">
         <input type="submit" name="rolldicebutton" class="button" value="rolldice Button" />
     </form>
 
@@ -722,6 +754,16 @@
         }elseif ($player_pos == 31 and $_SESSION['countremaining'] > 0){
             choosePathForm("up", "left");
         }
+        if($_SESSION['countremaining'] == 0){
+            if($_SESSION['whose_turn'] == 4){
+                $_SESSION['whose_turn'] = 1;
+            }else{
+                $_SESSION['whose_turn'] += 1;
+            }
+            $whose_turn = $_SESSION['whose_turn'];
+            mysqli_query($connection, "UPDATE gamestate set whose_turn = '$whose_turn'");
+        }
+        
         if($GLOBALS['user_player_num'] == 1){
             mysqli_query($connection, "UPDATE gamestate set player1_pos = '$player_pos'");
             $GLOBALS['player1_pos'] = $player_pos;
@@ -816,10 +858,20 @@
             var player3_color = "<?php echo $player3_color; ?>";
             var player4_color = "<?php echo $player4_color; ?>";
             var rollnum = "<?php echo $roll; ?>";
+            var whose_turn = "<?php echo $_SESSION['whose_turn']; ?>";
+            var user_player_num = "<?php echo $user_player_num; ?>";
             var remainingRollCount = "<?php echo $_SESSION['countremaining']; ?>";
 
             x.getElementById("rollDisplay").innerHTML = "Dice number: " + rollnum + " remaining: " + remainingRollCount;
             
+            if(user_player_num == whose_turn){
+                const form = document.getElementById('rolldiceform');
+                form.style.display = 'block';
+            }
+
+
+
+
             //the collection is of the game pieces contained in the  at the playeer's position
             const player1space = x.getElementById(player1_pos).children;
             //I can then specify a specific game piece on that space to be turned visible
