@@ -1,9 +1,9 @@
 <?php
 session_start();
 include("global.php");
-
+$pin = $_GET['pin'];
 $user_color = $_POST["color"];
-$gamestate_query = mysqli_query($connection,"select * from gamestate");
+$gamestate_query = mysqli_query($connection,"select * from gamestate where game_PIN = '$pin'");
 $gamestate = mysqli_fetch_assoc($gamestate_query);
 $player1color = $gamestate["player1_color"];
 $player2color = $gamestate["player2_color"];
@@ -59,17 +59,17 @@ if($errormessage != "") {
 }
 
 if($_SESSION["user_player_num"] == 1){
-    mysqli_query($connection, "insert into gamestate(player1_uname, player1_color) values ('$username', '$user_color')");
+    mysqli_query($connection, "insert into gamestate(game_PIN, player1_uname, player1_color) values ('$pin','$username', '$user_color')");
 }elseif($_SESSION["user_player_num"] == 2){
-    mysqli_query($connection, "UPDATE gamestate set player2_uname ='$username' , player2_color = '$user_color'");
+    mysqli_query($connection, "UPDATE gamestate set player2_uname ='$username' , player2_color = '$user_color' where game_PIN = '$pin'");
 }elseif($_SESSION["user_player_num"] == 3){
-    mysqli_query($connection, "UPDATE gamestate set player3_uname ='$username' , player3_color = '$user_color'");
+    mysqli_query($connection, "UPDATE gamestate set player3_uname ='$username' , player3_color = '$user_color' where game_PIN = '$pin'");
 }elseif($_SESSION["user_player_num"] == 4){
-    mysqli_query($connection, "UPDATE gamestate set player4_uname ='$username' , player4_color = '$user_color'");
+    mysqli_query($connection, "UPDATE gamestate set player4_uname ='$username' , player4_color = '$user_color' where game_PIN = '$pin'");
 }
 
 
 
-header("location: start_game.php");
+header("location: start_game.php?pin=". $pin);
 ?>
 

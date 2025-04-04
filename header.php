@@ -51,6 +51,14 @@
 
 
 		}
+        h3{
+            font-family: arial;
+			font-size: 1rem;
+            
+            color: black ;
+            
+			background-color: lightgray;
+        }
 		body{
 			
 			font-family: arial;

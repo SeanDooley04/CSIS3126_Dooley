@@ -3,6 +3,7 @@
     session_start();
     include('header.php');
     include('global.php');
+    $pin = $_GET['pin'];
 ?>
 <script>
     if ( window.history.replaceState ){
@@ -10,15 +11,21 @@
     }
 </script>
 
-<p><a href='index.php'>Home</a></p>
+<h2><a href='index.php'>Home</a></h2>
+
+
+<h3>Game link: http://localhost:8888/Web%20Board%20Game/game_setup.php?pin=<?php echo $pin;?></h3>
 <style>
     
-    
+    p{
+        text-align: center;
+    }
     .gameBoard{
         
         margin: 0 auto;
         display: flex;
         justify-content: center;
+        display: none;
 
 
     }
@@ -94,7 +101,7 @@
         display: flex;
         flex-direction: row;
     }
-
+    
 
     
     
@@ -188,7 +195,9 @@
         margin: 0 auto;
     }
 
-    
+    .rollDisplay{
+        visibility: hidden;
+    }
 
     
 
@@ -199,7 +208,7 @@
     
 </style>
     
-    <div class="gameBoard">
+    <div class="gameBoard" id="gameBoard">
         
         <class="flex-container">
 
@@ -651,8 +660,16 @@
         
     </div>
     
-    <p><button onclick="startGame()">start game</button></p>
-    <p id="rollDisplay"></p>
+    <p id="rollDisplay" class="rollDisplay"></p>
+    <?php //I couldn't get an html button to run a php function so I'm using this as a work around
+        if(array_key_exists('startbutton', $_POST)) {
+            mysqli_query($connection, "UPDATE gamestate SET game_started = '1' WHERE game_PIN ='$pin'");
+        }
+    ?>
+
+    <form method="post" id="startbuttonform">
+        <input type="submit" name="startbutton" class="button" value="Start Button" />
+    </form>
 
     <?php //I couldn't get an html button to run a php function so I'm using this as a work around
         if(array_key_exists('resetbutton', $_POST)) {
@@ -661,7 +678,7 @@
     ?>
     
 
-
+    
 
     <form method="post" id="resetbuttonform">
         <input type="submit" name="resetbutton" class="button" value="Reset Button" />
@@ -674,7 +691,7 @@
 
     
 
-    <form action="movePiece_process.php" method="post" id="movepieceform">
+    <form action="movePiece_process.php?pin=<?php echo $pin; ?>" method="post" id="movepieceform">
         <input type="text" id="movetext" name="movetext" />
         <input type="submit" name="changepos" value="ChangePos" />
     </form>
@@ -688,11 +705,11 @@
     
     <?php
     //fetches the gamestate from the database
-    $gamestate_query = mysqli_query($connection, "select * from gamestate");
+    $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
 
     $gamestate = mysqli_fetch_assoc($gamestate_query);
     
-    
+    $game_started = $gamestate["game_started"];
     
     $player1_pos = $gamestate["player1_pos"];
     $player2_pos = $gamestate["player2_pos"];
@@ -779,6 +796,10 @@
         }
         
     }
+
+
+    //set up game id for multiple games
+    //store next pos in database
     function moveForward(){
         $player_pos = (int)$GLOBALS['user_player_pos'];
         switch($player_pos){
@@ -857,14 +878,21 @@
             var player2_color = "<?php echo $player2_color; ?>";
             var player3_color = "<?php echo $player3_color; ?>";
             var player4_color = "<?php echo $player4_color; ?>";
+            var game_started = "<?php echo $game_started; ?>";
             var rollnum = "<?php echo $roll; ?>";
             var whose_turn = "<?php echo $_SESSION['whose_turn']; ?>";
             var user_player_num = "<?php echo $user_player_num; ?>";
             var remainingRollCount = "<?php echo $_SESSION['countremaining']; ?>";
+            
 
+            if(game_started == "1"){
+                x.getElementById("gameBoard").style.display = "flex";
+                x.getElementById("rollDisplay");
+            }
+            
             x.getElementById("rollDisplay").innerHTML = "Dice number: " + rollnum + " remaining: " + remainingRollCount;
             
-            if(user_player_num == whose_turn){
+            if(user_player_num == whose_turn && game_started == "1"){
                 const form = document.getElementById('rolldiceform');
                 form.style.display = 'block';
             }
@@ -898,15 +926,6 @@
             
         }
         
-        
-        function startGame(){
-            var x = document;
-            x.getElementById("rollDisplay").style.visibility = "visible";
-            
-        
-        }
-
-
 
 
     </script>
