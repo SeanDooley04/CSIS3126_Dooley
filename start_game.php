@@ -15,6 +15,11 @@
 
 
 <h3>Game link: http://localhost:8888/Web%20Board%20Game/game_setup.php?pin=<?php echo $pin;?></h3>
+<div class="linkMessage" id="linkMessage">
+    <h3>send this link to your friends so they can join</h3>
+    <!-- The button used to copy the text -->
+    <button onclick="copyLink()">Copy Link</button>
+</div>
 <style>
     
     p{
@@ -884,15 +889,17 @@
             var user_player_num = "<?php echo $user_player_num; ?>";
             var remainingRollCount = "<?php echo $_SESSION['countremaining']; ?>";
             
+            
 
             if(game_started == "1"){
                 x.getElementById("gameBoard").style.display = "flex";
-                x.getElementById("rollDisplay");
+                
             }
             
             x.getElementById("rollDisplay").innerHTML = "Dice number: " + rollnum + " remaining: " + remainingRollCount;
             
             if(user_player_num == whose_turn && game_started == "1"){
+                x.getElementById("rollDisplay").style.visibility = "visible";
                 const form = document.getElementById('rolldiceform');
                 form.style.display = 'block';
             }
@@ -924,6 +931,16 @@
                 player4space[3].className = "gamepiece "+player4_color+"piece";
             }
             
+        }
+        function copyLink() {
+            var pin = "<?php echo $pin; ?>";
+            var link = "http://localhost:8888/Web%20Board%20Game/game_setup.php?pin="+ pin;
+            
+            // Copy the link
+            navigator.clipboard.writeText(link);
+
+            // Alert the copied text
+            alert("Copied the text: " + link);
         }
         
 
