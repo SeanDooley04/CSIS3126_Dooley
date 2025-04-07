@@ -58,8 +58,13 @@ if($errormessage != "") {
     die();
 }
 $user_id = (string)$_SESSION['user_id'];
+
+$next_pos = array(2);
+$json_next_pos = json_encode($next_pos);
+$jsonString = json_encode($data);
+
 if($user_player_num == 1){
-    mysqli_query($connection, "insert into gamestate(game_PIN, player1_id, player1_uname, player1_color) values ('$pin', '$user_id', '$username', '$user_color')");
+    mysqli_query($connection, "insert into gamestate(game_PIN, player1_id, player1_uname, player1_color, next_pos) values ('$pin', '$user_id', '$username', '$user_color', '$json_next_pos')");
 }elseif($user_player_num == 2){
     mysqli_query($connection, "UPDATE gamestate set player2_id ='$user_id', player2_uname ='$username' , player2_color = '$user_color' where game_PIN = '$pin'");
 }elseif($user_player_num == 3){
@@ -67,6 +72,18 @@ if($user_player_num == 1){
 }elseif($user_player_num == 4){
     mysqli_query($connection, "UPDATE gamestate set player4_id ='$user_id', player4_uname ='$username' , player4_color = '$user_color' where game_PIN = '$pin'");
 }
+
+
+
+$next_pos = array(58);
+$json_next_pos = json_encode($next_pos);
+
+
+// Encode the array into a JSON string
+$jsonString = json_encode($data);
+
+// Output the JSON string
+echo $jsonString;
 
 
 

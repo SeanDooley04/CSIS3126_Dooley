@@ -36,5 +36,8 @@ CREATE TABLE gamestate (
     player3_stars int(11) DEFAULT 0,
     player4_stars int(11) DEFAULT 0,
     whose_turn int(1),
+    next_pos JSON DEFAULT NULL,
+    roll_num int(10) DEFAULT NULL,
+    count_remaining int(10) DEFAULT NULL,
     game_started boolean DEFAULT 0,
 )

@@ -10,226 +10,14 @@
         window.history.replaceState(null, null, window.location.href );
     }
 </script>
-
-<style>
-    
-    p{
-        text-align: left;
-    }
-    .gameBoard{
-        
-        
-        margin-left: 1vw;
-        margin-top: 1vw;
-        display: flex;
-        justify-content: right;
-        display: none;
-
-
-    }
-    
-    .flex-container {
-        position:absolute;
-        border: 1px black;
-        display: flex;
-        flex-flow:column;
-        border-collapse: collapse;
-        width: 100%;
-        height: 100%;
-        
-    }
-    .flex-box {
-        width   : 2.5vw;
-        height  : 2.5vw;
-        border  : 1px solid black;
-        color   : black;
-        display : flex;
-        align-items: center;
-        justify-content: center;
-        background-size: 100%;
-        flex-wrap: wrap;
-        
-        
-    }
-    .column{
-        display: flex;
-        justify-content: space-between;
-        width:100%;
-    }
-    .row1 {
-        margin: 0 auto;
-        display: flex;
-        align-content: flex-start;
-    }
-    .row2{
-        display: flex;
-        flex-direction: column;
-    }
-    .row3{
-        display:flex;
-        flex-direction: column;
-        align-content: flex-start;
-    }
-    .row4{
-        display:flex;
-        flex-direction: column;
-        align-content: flex-start;
-    }
-    .row6{
-        display: flex;
-        flex-direction: column;
-    }
-    .row7{
-        display:flex;
-        flex-direction: column;
-        align-content: flex-start;
-    }
-    .row8{
-        display:flex;
-        flex-direction: column;
-        align-content: flex-start;
-    }
-    .row5{
-        margin: 0 auto;
-        display: flex;
-        flex-direction: row;
-    }
-    .row9{
-        margin: 0 auto;
-        display: flex;
-        flex-direction: row;
-    }
-    
-    .blue {
-        background-color: blue;
-    }
-    .red{
-        background-color: red;
-    }
-    .gray{
-        background-color: gray;
-    }
-    .topleftcorner{
-        background-image: url("images/board/topleftcorner.jpg");
-        
-    }
-    .topsplitpath{
-        background-image: url("images/board/topsplitpath.jpg");
-        
-    }
-    .toprightcorner{
-        background-image: url("images/board/toprightcorner.jpg");
-    }
-    .middleleftcorner{
-        background-image: url("images/board/middleleftarrow.jpg");
-    }
-    .centersplitpath{
-        background-image: url("images/board/centersplitpath.jpg");
-    }
-    .downarrow{
-        background-image: url("images/board/downarrow.jpg");
-    }
-    .leftupsplitpath{
-        background-image: url("images/board/leftupsplitpath.jpg");
-    }
-    .bottomleftcorner{
-        background-image: url("images/board/bottomleftcorner.jpg");
-    }
-    .bottomrightcorner{
-        background-image: url("images/board/bottomrightcorner.jpg") ;
-    }
-
-
-    .diceroll{
-        justify-content: left;
-        text-align: center;
-        visibility: hidden;
-    }
-
-    .gamepiece{
-        width:  1.25vw;
-        height: 45%;
-        background-size: 100%;
-    }
-    .lightbluepiece{
-        background-image: url("images/pieces/lightbluegamepiece.png");
-        visibility: hidden;
-        
-    }
-    .pinkpiece{
-        background-image: url("images/pieces/pinkgamepiece.png");
-        visibility: hidden;
-    }
-    .greenpiece{
-        background-image: url("images/pieces/greengamepiece.png");
-        visibility: hidden;
-
-    }
-    .whitepiece{
-        background-image: url("images/pieces/whitegamepiece.png");
-        visibility: hidden;
-        
-    }
-    .lightgreenpiece{
-        background-image: url("images/pieces/lightgreengamepiece.png");
-        visibility: hidden;
-    }
-    .lavenderpiece{
-        background-image: url("images/pieces/lavendergamepiece.png");
-        visibility: hidden;
-    }
-    form[id="rolldiceform"] {
-        display: none;
-        width:20vw;
-        margin: auto;
-    }
-    form{
-        width:20vw;
-        margin: auto;
-    }
-
-    .rollDisplay{
-        visibility: hidden;
-    }
-
-    .playerNames{
-        display: flex;
-        flex-direction: row;
-        text-align: center;
-        margin-left: auto;
-        
-    }
-    .playerlabel{
-        width:  4vw;
-        height: 4vw;
-        background-size: 100%;
-        text-align: center;
-        font-size: 0.7vw;
-        border: 1px black;
-        margin: auto;
-        margin-bottom: 8vw;
-        
-    }
-    .gamediv{
-        display: flex;
-        flex-direction: row;
-    }
-    .other{
-        width:50%;
-        margin-left: 1vw;
-        margin-right: 1vw;
-        text-align: left
-        
-    }
-    h3{
-        margin-left: 1vw;
-    }
-</style>
+<head>
+    <link rel="stylesheet" href="gamestyle.css">
+</head>
     
     <div class="gamediv">
         <div class="other">
             
-        <h2><a href='index.php'>Home</a></h2>
+        <h3><a href='index.php'>Home</a></h3>
 
         <h3>Game link: http://localhost:8888/Web%20Board%20Game/selection.php?pin=<?php echo $pin;?></h3>
         <h3 class="linkMessage" id="linkMessage">
@@ -270,18 +58,21 @@
 
             $gamestate = mysqli_fetch_assoc($gamestate_query);
             
+            $count_remaining = $gamestate['count_remaining'];
+            $next_pos = $gamestate[''];
+
             $game_started = $gamestate["game_started"];
             $player1_name = $gamestate["player1_uname"];
             $player2_name = $gamestate["player2_uname"];
             $player3_name = $gamestate["player3_uname"];
             $player4_name = $gamestate["player4_uname"];
 
-
+            $whose_turn = $gamestate['whose_turn'];
 
             $player1_pos = $gamestate["player1_pos"];
             $player2_pos = $gamestate["player2_pos"];
             $player3_pos = $gamestate["player3_pos"];
-            $player4_pos= $gamestate["player4_pos"];
+            $player4_pos = $gamestate["player4_pos"];
             $player1_color = $gamestate["player1_color"];
             $player2_color = $gamestate["player2_color"];
             $player3_color = $gamestate["player3_color"];
@@ -296,8 +87,9 @@
             }elseif($user_player_num == 4){
                 $user_player_pos = $player4_pos;
             }
-            //no more session variables
-            $_SESSION['whose_turn'] = $gamestate["whose_turn"];
+            
+
+
             
             
             if(array_key_exists('rolldicebutton', $_POST)) {
@@ -774,7 +566,7 @@
     <?php
     //php reset function
     
-
+    
     
 
 
@@ -784,91 +576,98 @@
     }
     
     function rollDice($connection){
-        $_SESSION['countremaining'] = 0;
-        $GLOBALS ['roll'] = rand(1,6);
-        $GLOBALS ['rollcount'] = $GLOBALS['roll'];
-        while ($GLOBALS ['rollcount'] > 0){
-            moveForward();
-            $GLOBALS['rollcount'] = $GLOBALS ['rollcount'] - 1;
-        }
-        $player_pos = $GLOBALS['user_player_pos'];
-        $_SESSION['pos'] = (int)$player_pos;
-        if ($player_pos == 13 and $_SESSION['countremaining'] > 0){
-            choosePathForm("up", "right");
+        //echo 'rolldice is running<br> ';
+        $pin = $_GET['pin'];
+        
 
-        }elseif ($player_pos == 53 and $_SESSION['countremaining'] > 0){
-            choosePathForm("left", "right");
-        }elseif ($player_pos == 31 and $_SESSION['countremaining'] > 0){
-            choosePathForm("up", "left");
-        }
-        if($_SESSION['countremaining'] == 0){
-            if($_SESSION['whose_turn'] == 4){
-                $_SESSION['whose_turn'] = 1;
-            }else{
-                $_SESSION['whose_turn'] += 1;
-            }
-            $whose_turn = $_SESSION['whose_turn'];
-            mysqli_query($connection, "UPDATE gamestate set whose_turn = '$whose_turn'");
+        $roll_num = rand(1,6);
+        
+        mysqli_query($connection, "UPDATE gamestate set count_remaining = '$roll_num', roll_num ='$roll_num' where game_PIN = '$pin'");
+        $count_remaining = $roll_num;
+        while ($count_remaining > 0){
+            moveForward($connection);
+            //echo $count_remaining;
+            $count_remaining = $count_remaining - 1;
+            mysqli_query($connection, "UPDATE gamestate set count_remaining ='$roll_num' where game_PIN = '$pin'");
         }
         
-        if($GLOBALS['user_player_num'] == 1){
-            mysqli_query($connection, "UPDATE gamestate set player1_pos = '$player_pos'");
-            $GLOBALS['player1_pos'] = $player_pos;
-        }elseif($GLOBALS['user_player_num'] == 2){
-            mysqli_query($connection, "UPDATE gamestate set player2_pos = '$player_pos'");
-            $GLOBALS['player2_pos'] = $player_pos;
-        }elseif($GLOBALS['user_player_num'] == 3){
-            mysqli_query($connection, "UPDATE gamestate set player3_pos = '$player_pos'");
-            $GLOBALS['player3_pos'] = $player_pos;
-        }elseif($GLOBALS['user_player_num'] == 4){
-            mysqli_query($connection, "UPDATE gamestate set player4_pos = '$player_pos'");
-            $GLOBALS['player4_pos'] = $player_pos;
-        }
-        
+        //crossroads are at spaces 13, 53, and 31
     }
 
 
     //set up game id for multiple games
     //store next pos in database
-    function moveForward(){
-        $player_pos = (int)$GLOBALS['user_player_pos'];
-        switch($player_pos){
-            case 58:
-                $player_pos = 1;
-                $GLOBALS['user_player_pos'] = (string)$player_pos;
-                break;
-            case 42:
-                $player_pos = 7;
-                $GLOBALS['user_player_pos'] = (string)$player_pos;
-                break;
-            case 47:
-                $player_pos = 13;
-                $GLOBALS['user_player_pos'] = (string)$player_pos;
-                break;
-            case 69:
-                $player_pos = 19;
-                $GLOBALS['user_player_pos'] = (string)$player_pos;
-                break;        
-            case 13:
-                getRemaining();
-                $GLOBALS['user_player_pos'] = (string)$player_pos;
-                break;
-            case 53:
-                getRemaining();
-                $GLOBALS['user_player_pos'] = (string)$player_pos;
-                break;
-            case 31:
-                getRemaining();
-                $GLOBALS['user_player_pos'] = (string)$player_pos;
-                break;
-            default:
-                $player_pos += 1;
-                $GLOBALS['user_player_pos'] = (string)$player_pos;
+    function moveForward($connection){
+        $pin = $_GET['pin'];
+        $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
+        
+        $gamestate = mysqli_fetch_assoc($gamestate_query);
+        $player1_id = $gamestate["player1_id"];
+        $player2_id = $gamestate["player2_id"];
+        $player3_id = $gamestate["player3_id"];
+        $player4_id = $gamestate["player4_id"];
+
+        $count_remaining = $gamestate["count_remaining"];
+        $user_id = $_SESSION['user_id'];
+        if($user_id == $player1_id){
+            $user_player_num = 1;
+        }elseif($user_id == $player2_id){
+            $user_player_num = 2;
+        }elseif($user_id == $player3_id){
+            $user_player_num = 3;
+        }elseif($user_id == $player4_id){
+            $user_player_num = 4;
         }
+        //testing
+        //echo "user player num: ".$user_player_num."<br>";
+        $next_pos_JSON = $gamestate['next_pos'];
+        //testing
+        //echo (string)$next_pos_JSON."<br>";
+        //echo gettype($next_pos_JSON);
+        //echo count($next_pos_JSON);
+        $next_pos_Array = json_decode($next_pos_JSON, true );
+        if (count($next_pos_Array) == 1){
+            $current_pos = $next_pos_Array[0];
+            //echo $next_pos_Array[0];
+            $player_id_pos = "player".$user_player_num . "_pos";
+            
+            $next_pos_JSON = getNextPos($current_pos);
+            
+            mysqli_query($connection, "UPDATE gamestate set $player_id_pos = '$current_pos', next_pos = '$next_pos_JSON' where game_PIN = '$pin'");
+            $GLOBALS[$player_id_pos] = $current_pos;
+        }else{
+            
+        }
+        
+
+    }
+    function getNextPos($pos){
+        if($pos == 58){
+            $next_pos_Array = array(1);
+        }elseif($pos == 42){
+            $next_pos_Array = array(7);
+        }elseif($pos == 47){
+            $next_pos_Array = array(13);
+        }elseif($pos == 69){
+            $next_pos_Array = array(19);
+        }elseif($pos == 13){
+            $next_pos_Array = array('up' => 48, 'right' => 14);
+        }elseif($pos == 53){
+            $next_pos_Array = array('left' => 54, 'right' => 59);
+        }elseif($pos == 31){
+            $next_pos_Array = array('up' => 43,'left' => 32);
+        }else{
+            $next_pos = $pos + 1;
+            $next_pos_Array = array($next_pos);
+        }
+        $next_pos_JSON = json_encode($next_pos_Array);
+
+        return $next_pos_JSON;
     }
 
     function choosePathForm($direction1, $direction2){
-        echo '<form action="choosePath_process.php" method="POST">';
+        $pin = $_GET['pin'];
+        echo "<form action='choosePath_process.php?pin='$pin'' method='POST'>";
         if($direction1 == "up"){
             echo '<input type="radio" id = "up" name="direction" value ="up" >';
             echo '<label for="up">Up</label><br>';
@@ -916,13 +715,14 @@
             var player4_color = "<?php echo $player4_color; ?>";
 
             var game_started = "<?php echo $game_started; ?>";
+            var count_remaing = "<?php echo $count_remaining; ?>";
 
             var rollnum = "<?php echo $roll; ?>";
-
-            var whose_turn = "<?php echo $_SESSION['whose_turn']; ?>";
+            
+            var whose_turn = "<?php echo $whose_turn; ?>";
             var user_player_num = "<?php echo $user_player_num; ?>";
 
-            var remainingRollCount = "<?php echo $_SESSION['countremaining']; ?>";
+            
             
 
             
@@ -932,7 +732,7 @@
                 
             }
             
-            x.getElementById("rollDisplay").innerHTML = "Dice number: " + rollnum + " remaining: " + remainingRollCount;
+            x.getElementById("rollDisplay").innerHTML = "Dice number: " + rollnum + " remaining: " + count_remaing;
             
             if(user_player_num == whose_turn && game_started == "1"){
                 x.getElementById("rollDisplay").style.visibility = "visible";
