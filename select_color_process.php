@@ -20,19 +20,19 @@ if($user_color == $player1color or $user_color == $player2color or $user_color =
 $user_player_num = 0;
 
 if(is_null($gamestate["player1_uname"])){
-    $_SESSION["user_player_num"] = 1;
+    $user_player_num = 1;
     
     $username = "guest1";
 }elseif(is_null($gamestate["player2_uname"])){
-    $_SESSION["user_player_num"] = 2;
+    $user_player_num = 2;
     
     $username ="guest2";
 }elseif(is_null($gamestate["player3_uname"])){
-    $_SESSION["user_player_num"] = 3;
+    $user_player_num = 3;
     
     $username = "guest3";
 }elseif(is_null($gamestate["player4_uname"])){
-    $_SESSION["user_player_num"] = 4;
+    $user_player_num = 4;
     $username = "guest4";
 }else{
     $errormessage .= "game is full";
@@ -54,18 +54,18 @@ if(isset($_SESSION['user_id'])){
 
 
 if($errormessage != "") {
-    include("game_setup.php");
+    include("select_color.php");
     die();
 }
-
-if($_SESSION["user_player_num"] == 1){
-    mysqli_query($connection, "insert into gamestate(game_PIN, player1_uname, player1_color) values ('$pin','$username', '$user_color')");
-}elseif($_SESSION["user_player_num"] == 2){
-    mysqli_query($connection, "UPDATE gamestate set player2_uname ='$username' , player2_color = '$user_color' where game_PIN = '$pin'");
-}elseif($_SESSION["user_player_num"] == 3){
-    mysqli_query($connection, "UPDATE gamestate set player3_uname ='$username' , player3_color = '$user_color' where game_PIN = '$pin'");
-}elseif($_SESSION["user_player_num"] == 4){
-    mysqli_query($connection, "UPDATE gamestate set player4_uname ='$username' , player4_color = '$user_color' where game_PIN = '$pin'");
+$user_id = (string)$_SESSION['user_id'];
+if($user_player_num == 1){
+    mysqli_query($connection, "insert into gamestate(game_PIN, player1_id, player1_uname, player1_color) values ('$pin', '$user_id', '$username', '$user_color')");
+}elseif($user_player_num == 2){
+    mysqli_query($connection, "UPDATE gamestate set player2_id ='$user_id', player2_uname ='$username' , player2_color = '$user_color' where game_PIN = '$pin'");
+}elseif($user_player_num == 3){
+    mysqli_query($connection, "UPDATE gamestate set player3_id ='$user_id', player3_uname ='$username' , player3_color = '$user_color' where game_PIN = '$pin'");
+}elseif($user_player_num == 4){
+    mysqli_query($connection, "UPDATE gamestate set player4_id ='$user_id', player4_uname ='$username' , player4_color = '$user_color' where game_PIN = '$pin'");
 }
 
 

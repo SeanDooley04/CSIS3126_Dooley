@@ -11,6 +11,10 @@ insert into users (user_email, user_password_hash, user_admin) values ('admin@gm
 
 CREATE TABLE gamestate (
     game_PIN int(6) NULL DEFAULT NULL,
+    player1_id int,
+    player2_id int,
+    player3_id int,
+    player4_id int,
     player1_uname varchar(200),
     player2_uname varchar(200),
     player3_uname varchar(200),

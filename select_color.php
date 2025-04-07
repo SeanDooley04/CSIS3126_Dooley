@@ -7,7 +7,7 @@
 
 ?>
     
-    <form action="game_setup_process.php?pin=<?php echo $pin; ?>" method="POST">
+    <form action="select_color_process.php?pin=<?php echo $pin; ?>" method="POST">
         <div style="color: red;">
             <?php echo $errormessage; ?>
         </div>

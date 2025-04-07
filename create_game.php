@@ -34,7 +34,7 @@
         const link = document.createElement('a');
 
         // Set the href attribute (the link destination)
-        link.href = 'game_setup.php?pin='+ pin;
+        link.href = 'select_color.php?pin='+ pin;
 
         // Set the text content of the link
         link.textContent = 'select Piece color';
@@ -42,6 +42,4 @@
         // Append the link to the desired element in the DOM
         document.body.appendChild(link); // Appends to the end of the body
     </script>
-   <!--
-    <p><a href='game_setup.php?pin='>Select your piece color</a></p><br>
-    -->
+   

@@ -1,7 +1,11 @@
 <?php
 include("header.php");
+if (isset($_GET['pin'])){
+    $pin = $_GET['pin'];
+    $pinURL = "?pin=".$pin; 
+}
 ?>
-    <form action="login_process.php" method="POST">
+    <form action="login_process.php<?php echo $pinURL; ?>" method="POST">
         <div style="color: red;">
             <?php echo $errormessage; ?>
         </div>

@@ -3,8 +3,8 @@
     include("header.php");
 
     if(!isset($_SESSION['user_id'])){
-        echo"<p><a href='create_account.php'>Create a new account</a><br />";
-        echo"<a href='login.php'>Login</a></p><br />";
+        echo"<p><a href='create_account.php'>Create a new account</a><br>";
+        echo"<a href='login.php'>Login</a></p><br>";
     }
     else{
        
@@ -12,8 +12,8 @@
         $result = mysqli_query($connection,"select username from users where user_id ='$user_id'");
         $user_row = mysqli_fetch_assoc($result);
         $username = $user_row['username'];
-        echo"<p>Hello, $username</p><br />";
-        echo"<p><a href='logout.php'>Logout</a></p><br />";
+        echo"<p>Hello, $username</p><br>";
+        echo"<p><a href='logout.php'>Logout</a></p><br>";
         
     }
 ?>

@@ -10,13 +10,7 @@ $user_row = mysqli_fetch_assoc($result);
 
 
 
-$user_password_hash = $user_row["user_password_hash"];
-if(password_verify($user_password, $user_password_hash)){
-    $_SESSION['user_id'] = $user_row['user_id'];
-    header("Location: index.php");
-}else{
-    $errormessage .= "Email or Password is invalid<br />";
-}
+
 
 
 $errormessage = "";
@@ -39,11 +33,24 @@ if(strlen($user_password)> 200)
     
 
 
+
+$user_password_hash = $user_row["user_password_hash"];
+if(password_verify($user_password, $user_password_hash)){
+    $_SESSION['user_id'] = $user_row['user_id'];
+    if (isset($_GET['pin'])){
+        $pin = $_GET['pin'];
+        header("location: select_color.php?pin=$pin");
+    }else{
+        header("location: index.php");
+    }
+}else{
+    $errormessage .= "Email or Password is invalid<br />";
+}
+
 if($errormessage != ""){
     include("login.php");
     die();
 }
-
 
 
 

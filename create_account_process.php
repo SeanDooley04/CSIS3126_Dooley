@@ -45,7 +45,10 @@ $user_row = mysqli_fetch_assoc($user_result);
 $user_id = $user_row["user_id"];
 $_SESSION['user_id'] = $user_id;
 
-
-header("location: index.php");
-
+if (isset($_GET['pin'])){
+    $pin = $_GET['pin'];
+    header("location: select_color.php?pin=$pin");
+}else{
+    header("location: index.php");
+}
 ?>
