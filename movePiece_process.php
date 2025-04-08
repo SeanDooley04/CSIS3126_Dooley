@@ -4,16 +4,28 @@ include("global.php");
 $newPos = $_POST["movetext"];
 $pin = $_GET['pin'];
 $next_pos_JSON = getNextPos($newPos);
-if($_SESSION['user_player_num'] == 1){
-    
-    mysqli_query($connection, "UPDATE gamestate set player1_pos = '$newPos' , next_pos = '$next_pos_JSON' where game_PIN = '$pin'");
-}elseif($_SESSION['user_player_num'] == 2){
-    mysqli_query($connection, "UPDATE gamestate set player2_pos = '$newPos', next_pos = '$next_pos_JSON' where game_PIN = '$pin'");
-}elseif($_SESSION['user_player_num'] == 3){
-    mysqli_query($connection, "UPDATE gamestate set player3_pos = '$newPos', next_pos = '$next_pos_JSON' where game_PIN = '$pin' ");
-}elseif($_SESSION['user_player_num'] == 4){
-    mysqli_query($connection, "UPDATE gamestate set player4_pos = '$newPos', next_pos = '$next_pos_JSON' where game_PIN = '$pin'");
+$gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");  
+$gamestate = mysqli_fetch_assoc($gamestate_query);
+$player1_id = $gamestate["player1_id"];
+$player2_id = $gamestate["player2_id"];
+$player3_id = $gamestate["player3_id"];
+$player4_id = $gamestate["player4_id"];
+$user_id = $_SESSION['user_id'];
+//get the user player number from the database
+if($user_id == $player1_id){
+    $user_player_num = 1;
+}elseif($user_id == $player2_id){
+    $user_player_num = 2;
+}elseif($user_id == $player3_id){
+    $user_player_num = 3;
+}elseif($user_id == $player4_id){
+    $user_player_num = 4;
 }
+$player_id_pos = "player".$user_player_num . "_pos";
+
+mysqli_query($connection, "UPDATE gamestate set $player_id_pos = '$newPos' , next_pos = '$next_pos_JSON' where game_PIN = '$pin'");
+
+
 header("location: start_game.php?pin=$pin");
 
 

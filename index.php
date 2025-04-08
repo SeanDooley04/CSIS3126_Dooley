@@ -14,13 +14,14 @@
         $username = $user_row['username'];
         echo"<p>Hello, $username</p><br>";
         echo"<p><a href='logout.php'>Logout</a></p><br>";
+        echo "<p><a href='create_game.php'>Create Game</a></p><br>";
         
     }
 ?>
 <!-- -->
 <p><a href='start_game.php'>Start Game</a></p><br>
 <!-- -->
-<p><a href="create_game.php">Create Game</a></p><br>
+
 <p><a href='game_setup.php'>Setup Game</a></p><br>
 <h1>Game Instructions </h1>
 <p>

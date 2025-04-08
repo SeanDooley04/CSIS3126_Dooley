@@ -634,6 +634,8 @@
             $next_pos_JSON = getNextPos($current_pos);
             
             mysqli_query($connection, "UPDATE gamestate set $player_id_pos = '$current_pos', next_pos = '$next_pos_JSON' where game_PIN = '$pin'");
+            
+            //I do this so that the user doesn't need to reload the page to see their piece move
             $GLOBALS[$player_id_pos] = $current_pos;
         }else{
             
@@ -729,12 +731,13 @@
 
             if(game_started == "1"){
                 x.getElementById("gameBoard").style.display = "flex";
-                
+                x.getElementById("startbuttonform").style.visibility = "hidden";
             }
             
             x.getElementById("rollDisplay").innerHTML = "Dice number: " + rollnum + " remaining: " + count_remaing;
             
             if(user_player_num == whose_turn && game_started == "1"){
+                
                 x.getElementById("rollDisplay").style.visibility = "visible";
                 const form = document.getElementById('rolldiceform');
                 form.style.display = 'block';

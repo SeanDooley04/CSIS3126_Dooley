@@ -11,7 +11,7 @@
         $player4_id = $gamestate["player4_id"];
         $user_id = $_SESSION['user_id'];
         
-        if($user_id == $player2_id){
+        if($user_id == $player1_id or $user_id == $player2_id or $user_id == $player3_id or $user_id == $player4_id){
             //if the user is logged in and they were previously in this game let them back in
             header("location: start_game.php?pin=$pin");
         }
