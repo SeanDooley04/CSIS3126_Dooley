@@ -15,6 +15,11 @@
             const max = 999999; // Maximum 6-digit number
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
+
+
+        //form action select color
+        // input type = text name = pin disabled true
+        //input type submit   value=continue
         // Get the current URL
         const currentURL = window.location.href;
 

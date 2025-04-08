@@ -5,7 +5,8 @@
 include("global.php");
 
 
-
+//
+$pin = $_POST['pin'];
 $user_email = mysqli_real_escape_string($connection, $_POST["user_email"]);
 $username = mysqli_real_escape_string($connection, $_POST["username"]);
 $user_password = mysqli_real_escape_string($connection, $_POST["user_password"]);
@@ -37,16 +38,17 @@ if ($errormessage != "") {
 
 $user_password_hash = password_hash($user_password, PASSWORD_DEFAULT);
 mysqli_query($connection, "insert into users (user_email,user_password_hash,username) values ('$user_email','$user_password_hash','$username')");
+
+
+//gets the user id set by the database
 $user_result = mysqli_query($connection, "select * from users where user_email = '$user_email'");
-
-
 $user_row = mysqli_fetch_assoc($user_result);
-
 $user_id = $user_row["user_id"];
+
+//saves the user id in a session variable
 $_SESSION['user_id'] = $user_id;
 
-if (isset($_GET['pin'])){
-    $pin = $_GET['pin'];
+if ($pin != ""){
     header("location: select_color.php?pin=$pin");
 }else{
     header("location: index.php");

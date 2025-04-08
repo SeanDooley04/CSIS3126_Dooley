@@ -5,26 +5,34 @@
     include('global.php');
     $pin = $_GET['pin'];
 ?>
+
+<!--This part below is meant to stop form resubmission -->
 <script>
     if ( window.history.replaceState ){
         window.history.replaceState(null, null, window.location.href );
     }
 </script>
+
+<!--link to the .css file-->
 <head>
     <link rel="stylesheet" href="gamestyle.css">
 </head>
-    
-    <div class="gamediv">
-        <div class="other">
-            
-        <h3><a href='index.php'>Home</a></h3>
+    <!-- content div contains game controls and the game board so I can display controls next to the board rather than below to minimize the need for scrolling-->
+    <div class="content">
+        <!--start of controls div -->
+        <div class="gamecontrols">
+            <!--Link to return to the home screen -->
+            <h3><a href='index.php'>Home</a></h3>
 
-        <h3>Game link: http://localhost:8888/Web%20Board%20Game/selection.php?pin=<?php echo $pin;?></h3>
-        <h3 class="linkMessage" id="linkMessage">
-            <h3>send this link to your friends so they can join, 4 players max</h3>
-            <!-- The button used to copy the text -->
-            <button onclick="copyLink()">Copy Link</button>
-        </h3>
+            <!--displays the game link and button to copy it -->
+            <h3>Game link: http://localhost:8888/Web%20Board%20Game/selection.php?pin=<?php echo $pin;?></h3>
+            <h3 class="linkMessage" id="linkMessage">
+                <h3>send this link to your friends so they can join, 4 players max</h3>
+                <!-- The button used to copy the game link -->
+                <button onclick="copyLink()">Copy Link</button>
+            </h3>
+
+
             <p id="rollDisplay" class="rollDisplay"></p>
             <?php //I couldn't get an html button to run a php function so I'm using this as a work around
                 if(array_key_exists('startbutton', $_POST)) {
@@ -35,20 +43,22 @@
             <form method="post" id="startbuttonform">
                 <input type="submit" name="startbutton" class="button" value="Start Button" />
             </form>
-
-            <?php //I couldn't get an html button to run a php function so I'm using this as a work around
+            
+            <!--The reset button-->
+            <?php // the reset button posts back to this page, this part checks if the button was pressed
                 if(array_key_exists('resetbutton', $_POST)) {
                     resetGame($connection);
                 }
             ?>
-
             <form method="post" id="resetbuttonform">
                 <input type="submit" name="resetbutton" class="button" value="Reset Button" />
             </form>
 
+
+            <!--The change position form that I am using for testing -->
             <form action="movePiece_process.php?pin=<?php echo $pin; ?>" method="post" id="movepieceform">
                 <input type="text" id="movetext" name="movetext" />
-                <input type="submit" name="changepos" value="ChangePos" />
+                <input type="submit" name="changepos" value="ChangePos(testing)" />
             </form>
 
             
@@ -560,16 +570,11 @@
             
         </div>
     </div>
-    
+
 
 
     <?php
     //php reset function
-    
-    
-    
-
-
     function resetGame($connection){
         //clears the gamestate database to start a fresh game, for testing
         mysqli_query($connection, "delete from gamestate" );
@@ -578,10 +583,7 @@
     function rollDice($connection){
         //echo 'rolldice is running<br> ';
         $pin = $_GET['pin'];
-        
-
         $roll_num = rand(1,6);
-        
         mysqli_query($connection, "UPDATE gamestate set count_remaining = '$roll_num', roll_num ='$roll_num' where game_PIN = '$pin'");
         $count_remaining = $roll_num;
         while ($count_remaining > 0){
@@ -644,6 +646,12 @@
 
     }
     function getNextPos($pos){
+        
+        //connect with the sql in gamestate
+        //have a JSON array and a key for the start position
+
+
+
         if($pos == 58){
             $next_pos_Array = array(1);
         }elseif($pos == 42){
@@ -710,7 +718,7 @@
             var player2_name = "<?php echo $player2_name; ?>";
             var player3_name = "<?php echo $player3_name; ?>";
             var player4_name = "<?php echo $player4_name; ?>";
-
+            
             var player1_color = "<?php echo $player1_color; ?>";
             var player2_color = "<?php echo $player2_color; ?>";
             var player3_color = "<?php echo $player3_color; ?>";
@@ -723,11 +731,6 @@
             
             var whose_turn = "<?php echo $whose_turn; ?>";
             var user_player_num = "<?php echo $user_player_num; ?>";
-
-            
-            
-
-            
 
             if(game_started == "1"){
                 x.getElementById("gameBoard").style.display = "flex";

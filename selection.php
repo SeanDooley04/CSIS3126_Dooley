@@ -13,7 +13,7 @@
         
         if($user_id == $player1_id or $user_id == $player2_id or $user_id == $player3_id or $user_id == $player4_id){
             //if the user is logged in and they were previously in this game let them back in
-            header("location: start_game.php?pin=$pin");
+            header("location: game_page.php?pin=$pin");
         }
         else{
             //if the user is logged in but not already in this game select a color

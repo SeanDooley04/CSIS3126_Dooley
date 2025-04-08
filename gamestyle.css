@@ -1,5 +1,5 @@
 h1{
-    margin-bottom: 0;
+    margin-bottom: 1vw;
 }
 p{
     text-align: left;
@@ -205,11 +205,11 @@ form{
     margin-bottom: 8vw;
     
 }
-.gamediv{
+.content{
     display: flex;
     flex-direction: row;
 }
-.other{
+.gamecontrols{
     width:50%;
     margin-left: 5vw;
     margin-right: 1vw;

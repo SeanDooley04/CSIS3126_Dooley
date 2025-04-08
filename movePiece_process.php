@@ -26,7 +26,7 @@ $player_id_pos = "player".$user_player_num . "_pos";
 mysqli_query($connection, "UPDATE gamestate set $player_id_pos = '$newPos' , next_pos = '$next_pos_JSON' where game_PIN = '$pin'");
 
 
-header("location: start_game.php?pin=$pin");
+header("location: game_page.php?pin=$pin");
 
 
 

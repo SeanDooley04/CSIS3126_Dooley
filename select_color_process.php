@@ -33,13 +33,12 @@ if(is_null($gamestate["player1_uname"])){
     $username = "guest3";
 }elseif(is_null($gamestate["player4_uname"])){
     $user_player_num = 4;
-    $username = "guest4";
 }else{
     $errormessage .= "game is full";
 }
 
 
-
+// person not logged in 
 if(isset($_SESSION['user_id'])){
     $user_id = $_SESSION['user_id'];
     $user_query = mysqli_query($connection, "select username from users where user_id = '$user_id'");
@@ -61,7 +60,6 @@ $user_id = (string)$_SESSION['user_id'];
 
 $next_pos = array(2);
 $json_next_pos = json_encode($next_pos);
-$jsonString = json_encode($data);
 
 if($user_player_num == 1){
     mysqli_query($connection, "insert into gamestate(game_PIN, player1_id, player1_uname, player1_color, next_pos) values ('$pin', '$user_id', '$username', '$user_color', '$json_next_pos')");
@@ -87,6 +85,6 @@ echo $jsonString;
 
 
 
-header("location: start_game.php?pin=". $pin);
+header("location: game_page.php?pin=". $pin);
 ?>
 
