@@ -605,6 +605,7 @@
         //echo 'rolldice is running<br> ';
         $pin = $_GET['pin'];
         $roll_num = rand(1,6);
+        
         mysqli_query($connection, "UPDATE gamestate set count_remaining = '$roll_num', roll_num ='$roll_num' where game_PIN = '$pin'");
         continueMovement($connection);
         
@@ -678,7 +679,7 @@
         
         //connect with the sql in gamestate
         //have a JSON array and a key for the start position
-
+        
         if($pos == 58){
             $next_pos_Array = array(1);
         }elseif($pos == 42){

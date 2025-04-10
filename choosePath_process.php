@@ -40,24 +40,33 @@ if ($direction == $direction1){
 }elseif($direction == $direction2){
     $pos = $pos2;
 }
-$next_pos_JSON = getNextPos($current_pos);
+
+
+
+
+$next_pos_JSON = getNextPos($pos);
 
 $count_remaining = $count_remaining - 1;
 
 mysqli_query($connection, "UPDATE gamestate set $player_id_pos = '$pos', next_pos = '$next_pos_JSON', count_remaining = '$count_remaining' where game_PIN ='$pin'");
-
+// above here is doing what it is supposed to
+// below is not for some reason
 
 
 
 $next_pos = $gamestate['next_pos'];
 $next_pos_JSON = $gamestate['next_pos'];
-$next_pos_Array = json_decode($next_pos_JSON, true );
+$next_pos_Array = json_decode($next_pos_JSON, true);
 $count_remaining = $gamestate["count_remaining"];
-if($count_remaining != 0){
+
+if($count_remaining > 0){
     continueMovement($connection);
+    header("location: game_page.php?pin=". $pin);
+}else{
+    header("location: game_page.php?pin=". $pin);
 }
     
-header("location: game_page.php?pin=". $pin);
+
 
 
 
@@ -68,25 +77,25 @@ header("location: game_page.php?pin=". $pin);
 
 
 function continueMovement($connection){
-    $pin = $_GET['pin'];
+    $pin = $_POST['pin'];
     $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
     $gamestate = mysqli_fetch_assoc($gamestate_query);
     $count_remaining = $gamestate['count_remaining'];
 
     $GLOBALS['stop'] = 0;
     while ($count_remaining > 0 and $GLOBALS['stop'] != 1){
-        
         //call move forward function
         moveForward($connection);
-
         // get the remaining count from the database
         $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
         $gamestate = mysqli_fetch_assoc($gamestate_query);
         $count_remaining = $gamestate['count_remaining'];
     }
 }
+
+
 function moveForward($connection){
-    $pin = $_GET['pin'];
+    $pin = $_POST['pin'];
     $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
     
     $gamestate = mysqli_fetch_assoc($gamestate_query);
@@ -132,7 +141,7 @@ function choosePathForm($next_pos_Array){
     $pos1 = $next_pos_Array['pos1'];
     $pos2 = $next_pos_Array['pos2'];
     
-    $pin = $_GET['pin'];
+    $pin = $_POST['pin'];
     echo "<form action='choosePath_process.php' method='POST'>";
     echo "<input type='hidden' name ='pin' value = '$pin'>";
     echo "<input type='hidden' name ='pos1' value = '$pos1'>";
