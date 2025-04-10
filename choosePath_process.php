@@ -1,73 +1,190 @@
 <?php
 session_start();
 include("global.php");
-$direction = $_POST["direction"];
-if($direction == 'up'){
+
+$pin = $_POST['pin'];
+$direction = $_POST['direction'];
+
+
+$direction1 = $_POST['direction1'];
+$direction2 = $_POST['direction2'];
+$pos1 = $_POST['pos1'];
+$pos2 = $_POST['pos2'];
+
+
+$gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
+        
+$gamestate = mysqli_fetch_assoc($gamestate_query);
+$player1_id = $gamestate["player1_id"];
+$player2_id = $gamestate["player2_id"];
+$player3_id = $gamestate["player3_id"];
+$player4_id = $gamestate["player4_id"];
+
+$count_remaining = $gamestate["count_remaining"];
+$user_id = $_SESSION['user_id'];
+if($user_id == $player1_id){
+    $user_player_num = 1;
+}elseif($user_id == $player2_id){
+    $user_player_num = 2;
+}elseif($user_id == $player3_id){
+    $user_player_num = 3;
+}elseif($user_id == $player4_id){
+    $user_player_num = 4;
+}
+$player_id_pos = "player".$user_player_num . "_pos";
+
+
+
+if ($direction == $direction1){
+    $pos = $pos1;
+}elseif($direction == $direction2){
+    $pos = $pos2;
+}
+$next_pos_JSON = getNextPos($current_pos);
+
+$count_remaining = $count_remaining - 1;
+
+mysqli_query($connection, "UPDATE gamestate set $player_id_pos = '$pos', next_pos = '$next_pos_JSON', count_remaining = '$count_remaining' where game_PIN ='$pin'");
+
+
+
+
+$next_pos = $gamestate['next_pos'];
+$next_pos_JSON = $gamestate['next_pos'];
+$next_pos_Array = json_decode($next_pos_JSON, true );
+$count_remaining = $gamestate["count_remaining"];
+if($count_remaining != 0){
+    continueMovement($connection);
+}
     
-    if($_SESSION['pos'] == 13){
-        $player_pos = 48;
-    }elseif($_SESSION['pos'] == 31){
-        $player_pos = 43;
+header("location: game_page.php?pin=". $pin);
+
+
+
+
+
+
+
+
+
+function continueMovement($connection){
+    $pin = $_GET['pin'];
+    $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
+    $gamestate = mysqli_fetch_assoc($gamestate_query);
+    $count_remaining = $gamestate['count_remaining'];
+
+    $GLOBALS['stop'] = 0;
+    while ($count_remaining > 0 and $GLOBALS['stop'] != 1){
+        
+        //call move forward function
+        moveForward($connection);
+
+        // get the remaining count from the database
+        $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
+        $gamestate = mysqli_fetch_assoc($gamestate_query);
+        $count_remaining = $gamestate['count_remaining'];
     }
-    $_SESSION['countremaining'] -= 1;
-}elseif($direction == 'right'){
-    if($_SESSION['pos'] == 13){
-        $player_pos = 14;
-    }elseif($_SESSION['pos'] == 53){
-        $player_pos = 59;
-    }
-    $_SESSION['countremaining'] -= 1;
 }
-if($direction == 'left'){
-    if($_SESSION['pos'] == 53){
-        $player_pos = 54;
-    }elseif($_SESSION['pos'] == 31){
-        $player_pos = 32;
+function moveForward($connection){
+    $pin = $_GET['pin'];
+    $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
+    
+    $gamestate = mysqli_fetch_assoc($gamestate_query);
+    $player1_id = $gamestate["player1_id"];
+    $player2_id = $gamestate["player2_id"];
+    $player3_id = $gamestate["player3_id"];
+    $player4_id = $gamestate["player4_id"];
+
+    $count_remaining = $gamestate["count_remaining"];
+    $user_id = $_SESSION['user_id'];
+    if($user_id == $player1_id){
+        $user_player_num = 1;
+    }elseif($user_id == $player2_id){
+        $user_player_num = 2;
+    }elseif($user_id == $player3_id){
+        $user_player_num = 3;
+    }elseif($user_id == $player4_id){
+        $user_player_num = 4;
     }
-    $_SESSION['countremaining'] -= 1;
-}
-while($_SESSION['countremaining']> 0){
-    switch($player_pos){
-        case 58:
-            $player_pos = 1;
-            break;
-        case 42:
-            $player_pos = 7;
-            break;
-        case 47:
-            $player_pos = 13;
-            break;
-        case 69:
-            $player_pos = 19;
-            break;        
-        case 13:
-            getRemaining();
-            break;
-        default:
-            $player_pos += 1;
-    }
-    $_SESSION['countremaining'] -= 1;
-}
-if($_SESSION['countremaining'] == 0){
-    if($_SESSION['whose_turn'] == 4){
-        $_SESSION['whose_turn'] = 1;
+    
+    $next_pos_JSON = $gamestate['next_pos'];
+    $next_pos_Array = json_decode($next_pos_JSON, true );
+    if (count($next_pos_Array) == 1){
+        $current_pos = $next_pos_Array[0];
+        
+        $player_id_pos = "player".$user_player_num . "_pos";
+        
+        $next_pos_JSON = getNextPos($current_pos);
+        //update the count remaining
+        $count_remaining = $count_remaining - 1 ;
+        mysqli_query($connection, "UPDATE gamestate set $player_id_pos = '$current_pos', next_pos = '$next_pos_JSON', count_remaining = '$count_remaining' where game_PIN = '$pin'");
+
     }else{
-        $_SESSION['whose_turn'] +=1;
+        $GLOBALS['stop'] = 1;
+        choosePathForm($next_pos_Array);
     }
-    $whose_turn = $_SESSION['whose_turn'];
-    mysqli_query($connection, "UPDATE gamestate set whose_turn = '$whose_turn'");
+    
+
+}
+function choosePathForm($next_pos_Array){
+    $direction1 = $next_pos_Array['direction1'];
+    $direction2 = $next_pos_Array['direction2'];
+    $pos1 = $next_pos_Array['pos1'];
+    $pos2 = $next_pos_Array['pos2'];
+    
+    $pin = $_GET['pin'];
+    echo "<form action='choosePath_process.php' method='POST'>";
+    echo "<input type='hidden' name ='pin' value = '$pin'>";
+    echo "<input type='hidden' name ='pos1' value = '$pos1'>";
+    echo "<input type='hidden' name ='pos2' value = '$pos2'>";
+    echo "<input type='hidden' name ='direction1' value = '$direction1'>";
+    echo "<input type='hidden' name ='direction2' value = '$direction2'>";
+    if($direction1 == "up" or $direction2 == "up"){
+        echo '<input type="radio" id = "up" name="direction" value ="up" >';
+        echo '<label for="up">Up</label><br>';
+    }
+    if($direction1 == "left" or $direction2 == "left"){
+        echo '<input type="radio" id = "left" name="direction" value ="left" >';
+        echo '<label for="up">Left</label><br>';
+    }
+    if($direction1 == "right" or $direction2 == "right"){
+        echo '<input type="radio" id = "right" name="direction" value ="right" >';
+        echo '<label for="right">Right</label><br>';
+    }
+        
+    echo '<input type="submit" value="Go">';
+    echo '</form>';
 }
 
 
-if($_SESSION['user_player_num'] == 1){
-    mysqli_query($connection, "UPDATE gamestate set player1_pos = '$player_pos'");
-}elseif($_SESSION['user_player_num'] == 2){
-    mysqli_query($connection, "UPDATE gamestate set player2_pos = '$player_pos'");
-}elseif($_SESSION['user_player_num'] == 3){
-    mysqli_query($connection, "UPDATE gamestate set player3_pos = '$player_pos'");
-}elseif($_SESSION['user_player_num'] == 4){
-    mysqli_query($connection, "UPDATE gamestate set player4_pos = '$player_pos'");
+function getNextPos($pos){
+        
+    //connect with the sql in gamestate
+    //have a JSON array and a key for the start position
+
+    if($pos == 58){
+        $next_pos_Array = array(1);
+    }elseif($pos == 42){
+        $next_pos_Array = array(7);
+    }elseif($pos == 47){
+        $next_pos_Array = array(13);
+    }elseif($pos == 69){
+        $next_pos_Array = array(19);
+    }elseif($pos == 13){
+        $next_pos_Array = array('pos1' => 48, 'pos2' => 14, 'direction1' => 'up', 'direction2' => 'right' );
+    }elseif($pos == 53){
+        $next_pos_Array = array('pos1' => 54, 'pos2' => 59, 'direction1' => 'left', 'direction2' => 'right');
+    }elseif($pos == 31){
+        $next_pos_Array = array('pos1' => 43,'pos2' => 32, 'direction1' => 'up', 'direction2' => 'left');
+    }else{
+        $next_pos = $pos + 1;
+        $next_pos_Array = array($next_pos);
+    }
+    $next_pos_JSON = json_encode($next_pos_Array);
+
+    return $next_pos_JSON;
 }
-header("location: game_page.php");
+
+
 
 ?>

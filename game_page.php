@@ -69,13 +69,15 @@
             $gamestate = mysqli_fetch_assoc($gamestate_query);
             
             $count_remaining = $gamestate['count_remaining'];
-            $next_pos = $gamestate[''];
 
             $game_started = $gamestate["game_started"];
             $player1_name = $gamestate["player1_uname"];
             $player2_name = $gamestate["player2_uname"];
             $player3_name = $gamestate["player3_uname"];
             $player4_name = $gamestate["player4_uname"];
+
+
+
 
             $whose_turn = $gamestate['whose_turn'];
 
@@ -87,7 +89,26 @@
             $player2_color = $gamestate["player2_color"];
             $player3_color = $gamestate["player3_color"];
             $player4_color = $gamestate["player4_color"];
-            $user_player_num = $_SESSION["user_player_num"];
+
+            //determine the user_player_num
+            $player1_id = $gamestate["player1_id"];
+            $player2_id = $gamestate["player2_id"];
+            $player3_id = $gamestate["player3_id"];
+            $player4_id = $gamestate["player4_id"];
+            $user_id = $_SESSION['user_id'];
+            //get the user player number from the database
+            if($user_id == $player1_id){
+                $user_player_num = 1;
+            }elseif($user_id == $player2_id){
+                $user_player_num = 2;
+            }elseif($user_id == $player3_id){
+                $user_player_num = 3;
+            }elseif($user_id == $player4_id){
+                $user_player_num = 4;
+            }
+
+
+
             if($user_player_num == 1){
                 $user_player_pos = $player1_pos;
             }elseif($user_player_num == 2){
@@ -585,15 +606,28 @@
         $pin = $_GET['pin'];
         $roll_num = rand(1,6);
         mysqli_query($connection, "UPDATE gamestate set count_remaining = '$roll_num', roll_num ='$roll_num' where game_PIN = '$pin'");
-        $count_remaining = $roll_num;
-        while ($count_remaining > 0){
-            moveForward($connection);
-            //echo $count_remaining;
-            $count_remaining = $count_remaining - 1;
-            mysqli_query($connection, "UPDATE gamestate set count_remaining ='$roll_num' where game_PIN = '$pin'");
-        }
+        continueMovement($connection);
         
         //crossroads are at spaces 13, 53, and 31
+    }
+    function continueMovement($connection){
+        $pin = $_GET['pin'];
+        $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
+        $gamestate = mysqli_fetch_assoc($gamestate_query);
+        $count_remaining = $gamestate['count_remaining'];
+
+        $GLOBALS['stop'] = 0;
+        while ($count_remaining > 0 and $GLOBALS['stop'] != 1){
+            
+            //call move forward function
+            moveForward($connection);
+
+            // get the remaining count from the database
+            $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
+            $gamestate = mysqli_fetch_assoc($gamestate_query);
+            $count_remaining = $gamestate['count_remaining'];
+
+        }
     }
 
 
@@ -620,27 +654,22 @@
         }elseif($user_id == $player4_id){
             $user_player_num = 4;
         }
-        //testing
-        //echo "user player num: ".$user_player_num."<br>";
+        
         $next_pos_JSON = $gamestate['next_pos'];
-        //testing
-        //echo (string)$next_pos_JSON."<br>";
-        //echo gettype($next_pos_JSON);
-        //echo count($next_pos_JSON);
         $next_pos_Array = json_decode($next_pos_JSON, true );
         if (count($next_pos_Array) == 1){
             $current_pos = $next_pos_Array[0];
-            //echo $next_pos_Array[0];
+            
             $player_id_pos = "player".$user_player_num . "_pos";
             
             $next_pos_JSON = getNextPos($current_pos);
-            
-            mysqli_query($connection, "UPDATE gamestate set $player_id_pos = '$current_pos', next_pos = '$next_pos_JSON' where game_PIN = '$pin'");
-            
-            //I do this so that the user doesn't need to reload the page to see their piece move
-            $GLOBALS[$player_id_pos] = $current_pos;
+            //update the count remaining
+            $count_remaining = $count_remaining - 1 ;
+            mysqli_query($connection, "UPDATE gamestate set $player_id_pos = '$current_pos', next_pos = '$next_pos_JSON', count_remaining = '$count_remaining' where game_PIN = '$pin'");
+
         }else{
-            
+            $GLOBALS['stop'] = 1;
+            choosePathForm($next_pos_Array);
         }
         
 
@@ -649,8 +678,6 @@
         
         //connect with the sql in gamestate
         //have a JSON array and a key for the start position
-
-
 
         if($pos == 58){
             $next_pos_Array = array(1);
@@ -661,11 +688,11 @@
         }elseif($pos == 69){
             $next_pos_Array = array(19);
         }elseif($pos == 13){
-            $next_pos_Array = array('up' => 48, 'right' => 14);
+            $next_pos_Array = array('pos1' => 48, 'pos2' => 14, 'direction1' => 'up', 'direction2' => 'right' );
         }elseif($pos == 53){
-            $next_pos_Array = array('left' => 54, 'right' => 59);
+            $next_pos_Array = array('pos1' => 54, 'pos2' => 59, 'direction1' => 'left', 'direction2' => 'right');
         }elseif($pos == 31){
-            $next_pos_Array = array('up' => 43,'left' => 32);
+            $next_pos_Array = array('pos1' => 43,'pos2' => 32, 'direction1' => 'up', 'direction2' => 'left');
         }else{
             $next_pos = $pos + 1;
             $next_pos_Array = array($next_pos);
@@ -675,32 +702,52 @@
         return $next_pos_JSON;
     }
 
-    function choosePathForm($direction1, $direction2){
+    function choosePathForm($next_pos_Array){
+        $direction1 = $next_pos_Array['direction1'];
+        $direction2 = $next_pos_Array['direction2'];
+        $pos1 = $next_pos_Array['pos1'];
+        $pos2 = $next_pos_Array['pos2'];
+        
         $pin = $_GET['pin'];
-        echo "<form action='choosePath_process.php?pin='$pin'' method='POST'>";
-        if($direction1 == "up"){
+        echo "<form action='choosePath_process.php' method='POST'>";
+        echo "<input type='hidden' name ='pin' value = '$pin'>";
+        echo "<input type='hidden' name ='pos1' value = '$pos1'>";
+        echo "<input type='hidden' name ='pos2' value = '$pos2'>";
+        echo "<input type='hidden' name ='direction1' value = '$direction1'>";
+        echo "<input type='hidden' name ='direction2' value = '$direction2'>";
+        if($direction1 == "up" or $direction2 == "up"){
             echo '<input type="radio" id = "up" name="direction" value ="up" >';
             echo '<label for="up">Up</label><br>';
-        }elseif($direction1 == "left"){
+        }
+        if($direction1 == "left" or $direction2 == "left"){
             echo '<input type="radio" id = "left" name="direction" value ="left" >';
             echo '<label for="up">Left</label><br>';
         }
-        if($direction2 == "right"){
+        if($direction1 == "right" or $direction2 == "right"){
             echo '<input type="radio" id = "right" name="direction" value ="right" >';
             echo '<label for="right">Right</label><br>';
-        }elseif($direction2 == "left"){
-            echo '<input type="radio" id = "left" name="direction" value ="left" >';
-            echo '<label for="up">Left</label><br>';
         }
+            
         echo '<input type="submit" value="Go">';
         echo '</form>';
     }
 
-    function getRemaining(){
-        if($GLOBALS['rollcount'] > $_SESSION ['countremaining']){
-            $_SESSION ['countremaining'] = $GLOBALS['rollcount'];
-        }
-    }
+    
+    //fetches the gamestate from the database
+    $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
+
+    $gamestate = mysqli_fetch_assoc($gamestate_query);
+    $roll_num = $gamestate["roll_num"];
+    $count_remaining = $gamestate['count_remaining'];
+    $whose_turn = $gamestate['whose_turn'];
+    $player1_pos = $gamestate["player1_pos"];
+    $player2_pos = $gamestate["player2_pos"];
+    $player3_pos = $gamestate["player3_pos"];
+    $player4_pos = $gamestate["player4_pos"];
+
+   
+
+
 
     ?>
 
@@ -727,7 +774,7 @@
             var game_started = "<?php echo $game_started; ?>";
             var count_remaing = "<?php echo $count_remaining; ?>";
 
-            var rollnum = "<?php echo $roll; ?>";
+            var roll_num = "<?php echo $roll_num; ?>";
             
             var whose_turn = "<?php echo $whose_turn; ?>";
             var user_player_num = "<?php echo $user_player_num; ?>";
@@ -737,7 +784,7 @@
                 x.getElementById("startbuttonform").style.visibility = "hidden";
             }
             
-            x.getElementById("rollDisplay").innerHTML = "Dice number: " + rollnum + " remaining: " + count_remaing;
+            x.getElementById("rollDisplay").innerHTML = "Dice number: " + roll_num + " remaining: " + count_remaing;
             
             if(user_player_num == whose_turn && game_started == "1"){
                 
