@@ -1,6 +1,22 @@
 <?php
     include("header.php");
     include("global.php");
+
+    //generate  PIN
+    $pin = rand(100000, 999999);
+
+    //checks if there is already a game with that PIN, keep getting new PIN's until you get one that hasn't been used
+    $gamestate = mysqli_query($connection, "select game_PIN from gamestate where game_PIN = '$pin'");
+    while(mysqli_fetch_assoc($gamestate) != null){
+        $pin = rand(100000, 999999);
+        $gamestate = mysqli_query($connection, "select game_PIN from gamestate where game_PIN = '$pin'");
+    }
+
+    //show the PIN to the user
+    echo"<h1>Your Game Pin: $pin</h1><br>";
+    //let the user select a color for their gamepiece
+    echo"<p><a href='select_color.php?pin=$pin'>Select a color</a></p>";
+
 ?>
 <style>
     a{
@@ -8,43 +24,4 @@
         margin: 10vw;
     }
 </style>
-    <h1>Your Game Pin: <span id="gamePin"></span></h1>
-    <script>
-        function generatePin() {
-            const min = 100000; // Minimum 6-digit number
-            const max = 999999; // Maximum 6-digit number
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-
-        //form action select color
-        // input type = text name = pin disabled true
-        //input type submit   value=continue
-        // Get the current URL
-        const currentURL = window.location.href;
-
-        // Generate a random pin
-        const pin = generatePin();
-
-        // Append the pin to the URL (you can modify the URL part as needed)
-        const newURL = currentURL + "?pin=" + pin;
-
-        // Update the URL
-        window.history.replaceState({}, "", newURL);
-
-        // Display the pin on the page
-        document.getElementById("gamePin").textContent = pin;
-
-        // Create the anchor element
-        const link = document.createElement('a');
-
-        // Set the href attribute (the link destination)
-        link.href = 'select_color.php?pin='+ pin;
-
-        // Set the text content of the link
-        link.textContent = 'select Piece color';
-
-        // Append the link to the desired element in the DOM
-        document.body.appendChild(link); // Appends to the end of the body
-    </script>
    
