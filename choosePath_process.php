@@ -58,13 +58,29 @@ $next_pos = $gamestate['next_pos'];
 $next_pos_JSON = $gamestate['next_pos'];
 $next_pos_Array = json_decode($next_pos_JSON, true);
 $count_remaining = $gamestate["count_remaining"];
+$whose_turn = $gamestate['whose_turn'];
+
 
 if($count_remaining > 0){
     continueMovement($connection);
-    header("location: game_page.php?pin=". $pin);
-}else{
-    header("location: game_page.php?pin=". $pin);
+    $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
+    $gamestate = mysqli_fetch_assoc($gamestate_query);
+    $count_remaining = $gamestate['count_remaining'];
 }
+
+$whose_turn = $gamestate['whose_turn'];
+if($whose_turn != 4){
+    $whose_turn += 1;
+}else{
+    $whose_turn = 1;
+}
+$
+$next_player_pos = $gamestate['player'.$whose_turn.'_pos'];
+$next_pos_JSON = getNextPos($next_player_pos);
+// update whose turn and the next position acordingly
+mysqli_query($connection, "UPDATE gamestate set whose_turn = '$whose_turn', next_pos = '$next_pos_JSON', roll_num = 0 where game_PIN = '$pin'");
+header("location: game_page.php?pin=". $pin);
+
     
 
 

@@ -609,6 +609,27 @@
         mysqli_query($connection, "UPDATE gamestate set count_remaining = '$roll_num', roll_num ='$roll_num' where game_PIN = '$pin'");
         continueMovement($connection);
         
+        // update whose turn it is when the count remaining is 0
+        $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
+        $gamestate = mysqli_fetch_assoc($gamestate_query);
+        $count_remaining = $gamestate['count_remaining'];
+        $whose_turn = $gamestate['whose_turn'];
+
+        if($count_remaining == 0){
+            // determine which player has the next turn
+            if($whose_turn != 4){
+                $whose_turn += 1;
+            }else{
+                $whose_turn = 1;
+            }
+            $next_player_pos = $gamestate['player'.$whose_turn.'_pos'];
+            $next_pos_JSON = getNextPos($next_player_pos);
+            // update whose turn and the next position acordingly
+            mysqli_query($connection, "UPDATE gamestate set whose_turn = '$whose_turn', next_pos = '$next_pos_JSON', roll_num = 0 where game_PIN = '$pin'");
+        }
+
+
+        
         //crossroads are at spaces 13, 53, and 31
     }
     function continueMovement($connection){
@@ -643,7 +664,7 @@
         $player2_id = $gamestate["player2_id"];
         $player3_id = $gamestate["player3_id"];
         $player4_id = $gamestate["player4_id"];
-
+        
         $count_remaining = $gamestate["count_remaining"];
         $user_id = $_SESSION['user_id'];
         if($user_id == $player1_id){
