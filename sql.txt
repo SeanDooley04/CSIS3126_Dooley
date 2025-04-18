@@ -40,4 +40,6 @@ CREATE TABLE gamestate (
     roll_num int(10) DEFAULT NULL,
     count_remaining int(10) DEFAULT NULL,
     game_started boolean DEFAULT 0,
+    turn_limit int(50) DEFAULT 25,
+    current_turn_num int(50) DEFAULT 1
 )
