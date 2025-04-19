@@ -129,7 +129,12 @@ a{
     background-image: url("images/board/bottomleftcorner.jpg");
 }
 .bottomrightcorner{
-    background-image: url("images/board/bottomrightcorner.jpg") ;
+    background-image: url("images/board/bottomrightcorner.jpg");
+}
+
+
+.starSpace{
+    background-image: url("images/board/Star.jpg");
 }
 
 

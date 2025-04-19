@@ -119,11 +119,16 @@
                 $user_player_pos = $player4_pos;
             }
             
-            
+            $player1_coins = $gamestate['player1_coins'];
+            $player2_coins = $gamestate['player2_coins'];
+            $player3_coins = $gamestate['player3_coins'];
+            $player4_coins = $gamestate['player4_coins'];
 
+            $player1_stars = $gamestate['player1_stars'];
+            $player2_stars = $gamestate['player2_stars'];
+            $player3_stars = $gamestate['player3_stars'];
+            $player4_stars = $gamestate['player4_stars'];
 
-            
-            
             if(array_key_exists('rolldicebutton', $_POST)) {
                 rollDice($connection);
             }
@@ -132,11 +137,12 @@
                 <input type="submit" name="rolldicebutton" class="button" value="rolldice Button" />
             </form>
             <h3>Player names: </h3>
+            <!-- show each player's number of coins and stars below their names-->
             <div class="playerNames">
-                <div id="player1label" class="playerlabel"><br><br><br><br><br><?php echo $player1_name;?>   </div>
-                <div id="player2label" class="playerlabel"><br><br><br><br><br><?php echo $player2_name;?>   </div>
-                <div id="player3label" class="playerlabel"><br><br><br><br><br><?php echo $player3_name;?>   </div>
-                <div id="player4label" class="playerlabel"><br><br><br><br><br><?php echo $player4_name;?></div>
+                <div id="player1label" class="playerlabel"><br><br><br><br><br><?php echo $player1_name;?><br>Coins: <?php echo $player1_coins;?> <br>Stars: <?php echo $player1_stars;?>   </div>
+                <div id="player2label" class="playerlabel"><br><br><br><br><br><?php echo $player2_name;?><br>Coins: <?php echo $player2_coins;?> <br>Stars: <?php echo $player2_stars;?>   </div>
+                <div id="player3label" class="playerlabel"><br><br><br><br><br><?php echo $player3_name;?><br>Coins: <?php echo $player3_coins;?> <br>Stars: <?php echo $player3_stars;?>   </div>
+                <div id="player4label" class="playerlabel"><br><br><br><br><br><?php echo $player4_name;?><br>Coins: <?php echo $player4_coins;?> <br>Stars: <?php echo $player4_stars;?>   </div>
             </div>
             <!--display the current turn number and turn limit to the user -->
             <?php 
@@ -585,7 +591,7 @@
                         <div class="gamepiece"></div>
                         <div class="gamepiece"></div>
                     </div>
-                    <div class="flex-box gray" id="26">
+                    <div class="flex-box starSpace" id="26">
                         <div class="gamepiece"></div>
                         <div class="gamepiece"></div>
                         <div class="gamepiece"></div>
