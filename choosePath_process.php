@@ -68,13 +68,22 @@ if($count_remaining > 0){
     $count_remaining = $gamestate['count_remaining'];
 }
 
+//increment the current_turn_num if it is the end of the 4th player's turn
+//after each player has done a turn, increment the turn number
+$current_turn_num = $gamestate['current_turn_num'];
+$turn_limit = $gamestate['turn_limit'];
+if($whose_turn == 4 and $current_turn_num <= $turn_limit){
+    $current_turn_num += 1;
+    // update the turn number in the database
+    mysqli_query($connection, "UPDATE gamestate set current_turn_num = '$current_turn_num' where game_PIN = '$pin");
+}
+
 $whose_turn = $gamestate['whose_turn'];
 if($whose_turn != 4){
     $whose_turn += 1;
 }else{
     $whose_turn = 1;
 }
-$
 $next_player_pos = $gamestate['player'.$whose_turn.'_pos'];
 $next_pos_JSON = getNextPos($next_player_pos);
 // update whose turn and the next position acordingly
