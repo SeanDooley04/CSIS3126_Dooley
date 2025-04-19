@@ -119,6 +119,7 @@
                 $user_player_pos = $player4_pos;
             }
             
+            
 
 
             
@@ -137,6 +138,17 @@
                 <div id="player3label" class="playerlabel"><br><br><br><br><br><?php echo $player3_name;?>   </div>
                 <div id="player4label" class="playerlabel"><br><br><br><br><br><?php echo $player4_name;?></div>
             </div>
+            <!--display the current turn number and turn limit to the user -->
+            <?php 
+                $current_turn_num = $gamestate['current_turn_num'];
+                $turn_limit = $gamestate['turn_limit'];
+                echo  "<h3>current turn number: $current_turn_num / turn limit: $turn_limit</h3>";
+                if($current_turn_num >= $turn_limit){
+                    echo "<h2>Turn limit reached, game over </h2>";
+                }
+            ?>
+           
+
         </div>
 
         <div class="gameBoard" id="gameBoard">
@@ -624,7 +636,7 @@
             if($whose_turn == 4 and $current_turn_num <= $turn_limit){
                 $current_turn_num += 1;
                 // update the turn number in the database
-                mysqli_query($connection, "UPDATE gamestate set current_turn_num = '$current_turn_num' where game_PIN = '$pin");
+                mysqli_query($connection, "UPDATE gamestate set current_turn_num = '$current_turn_num' where game_PIN = '$pin'");
             }
 
             // determine which player has the next turn

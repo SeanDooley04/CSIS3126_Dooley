@@ -16,6 +16,9 @@
 
     <p>Choose a turn limit for how long the game should last: </p>
     
+    <input type="radio" id="2" name="turn_limit" value="2">
+    <label for="2">2 turns (for testing)</label><br>
+
     <input type="radio" id="15" name="turn_limit" value="15">
     <label for="15">15 turns</label><br>
     

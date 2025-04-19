@@ -1,5 +1,6 @@
 <?php
 include("global.php");
+
 // get variables from POST
 
 $user_email = mysqli_real_escape_string($connection, $_POST["user_email"]);
@@ -39,6 +40,23 @@ $_SESSION['user_id'] = $user_row['user_id'];
 // if not direct them back to the home page
 if ($_POST['pin'] != ""){
     $pin = $_POST['pin'];
+
+    //check if the user was previously in the game at the game_PIN
+    $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin' ");
+    $gamestate = mysqli_fetch_assoc($gamestate_query);
+
+    $player1_id = $gamestate['player1_id'];
+    $player2_id = $gamestate['player2_id'];
+    $player3_id = $gamestate['player3_id'];
+    $player4_id = $gamestate['player4_id'];
+
+    if($_SESSION['user_id'] == $player1_id or $_SESSION['user_id'] == $player2_id or $_SESSION['user_id'] == $player3_id or $_SESSION['user_id'] == $player4_id){
+        //bring the user back into the game after they log back in
+        header("location: game_page.php?pin=$pin");
+        die();
+    }
+
+
     header("location: select_color.php?pin=$pin");
 }else{
     header("location: index.php");
