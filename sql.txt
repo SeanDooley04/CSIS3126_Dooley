@@ -7,7 +7,7 @@ CREATE TABLE users (
     user_admin boolean not null default 0
 );
 
-insert into users (user_email, user_password_hash, user_admin) values ('admin@gmail.com','adminPassword', 1);
+insert into users (user_email, user_password_hash, user_admin) values ("admin@gmail.com","adminPassword", 1);
 
 CREATE TABLE gamestate (
     game_PIN int(6) NULL DEFAULT NULL,
@@ -41,5 +41,7 @@ CREATE TABLE gamestate (
     count_remaining int(10) DEFAULT NULL,
     game_started boolean DEFAULT 0,
     turn_limit int(50) DEFAULT 25,
-    current_turn_num int(50) DEFAULT 1
+    current_turn_num int(50) DEFAULT 1,
+    board_data JSON NULL DEFAULT NULL
 )
+

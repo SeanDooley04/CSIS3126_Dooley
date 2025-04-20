@@ -634,6 +634,27 @@
         $whose_turn = $gamestate['whose_turn'];
 
         if($count_remaining == 0){
+            //check if the player was on a red or blue space
+            $board_data_JSON = $gamestate['board_data'];
+            $board_data_array = json_decode($board_data_JSON, true);
+            //get the player's position
+            $player_pos = $gamestate['player'. $whose_turn . "_pos"];
+            $player_num_coins = "player" . $whose_turn . "_coins";
+            $player_coins = $gamestate[$player_num_coins];
+
+            if($board_data_array[$player_pos] == "blue"){
+                echo "plus 5 coins";
+                $player_coins += 5;
+                mysqli_query($connection, "UPDATE gamestate set $player_num_coins = '$player_coins' where game_PIN = '$pin' ");
+            }
+            if($board_data_array[$player_pos] == "red" and $player_coins != 0){
+                echo "minus 2 coins";
+                $player_coins -= 2;
+                mysqli_query($connection, "UPDATE gamestate set $player_num_coins = '$player_coins' where game_PIN = '$pin' ");
+            }
+            
+
+
 
             //increment the current_turn_num if it is the end of the 4th player's turn
             //after each player has done a turn, increment the turn number
@@ -644,21 +665,18 @@
                 // update the turn number in the database
                 mysqli_query($connection, "UPDATE gamestate set current_turn_num = '$current_turn_num' where game_PIN = '$pin'");
             }
-
+            
             // determine which player has the next turn
             if($whose_turn != 4){
                 $whose_turn += 1;
             }else{
                 $whose_turn = 1;
             }
-
-
+            
 
 
             $next_player_pos = $gamestate['player'.$whose_turn.'_pos'];
             $next_pos_JSON = getNextPos($next_player_pos);
-
-            
             
             // update whose turn and the next position acordingly
             mysqli_query($connection, "UPDATE gamestate set whose_turn = '$whose_turn', next_pos = '$next_pos_JSON', roll_num = 0 where game_PIN = '$pin'");
@@ -808,6 +826,8 @@
    
 
 
+    
+
 
     ?>
 
@@ -845,15 +865,20 @@
             }
             
             x.getElementById("rollDisplay").innerHTML = "Dice number: " + roll_num + " remaining: " + count_remaing;
-            
+
+            //only here for testing to keep the roll dice button on screen
+            //const form = document.getElementById('rolldiceform');
+            //form.style.display = 'block';
+            //x.getElementById("rollDisplay").style.visibility = "visible";
+            //
+
+
             if(user_player_num == whose_turn && game_started == "1"){
                 
                 x.getElementById("rollDisplay").style.visibility = "visible";
                 const form = document.getElementById('rolldiceform');
                 form.style.display = 'block';
             }
-
-
 
 
             //the collection is of the game pieces contained in the  at the playeer's position
