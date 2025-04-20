@@ -634,6 +634,7 @@
         $whose_turn = $gamestate['whose_turn'];
 
         if($count_remaining == 0){
+
             //check if the player was on a red or blue space
             $board_data_JSON = $gamestate['board_data'];
             $board_data_array = json_decode($board_data_JSON, true);
@@ -641,6 +642,7 @@
             $player_pos = $gamestate['player'. $whose_turn . "_pos"];
             $player_num_coins = "player" . $whose_turn . "_coins";
             $player_coins = $gamestate[$player_num_coins];
+
 
             if($board_data_array[$player_pos] == "blue"){
                 echo "plus 5 coins";
@@ -694,9 +696,29 @@
 
         $GLOBALS['stop'] = 0;
         while ($count_remaining > 0 and $GLOBALS['stop'] != 1){
+            $whose_turn = $gamestate['whose_turn'];
+            //check if the player is on a star space
+            $board_data_JSON = $gamestate['board_data'];
+            $board_data_array = json_decode($board_data_JSON, true);
+            //get the player's position
+            $player_pos = $gamestate['player'. $whose_turn . "_pos"];
+            $player_num_coins = "player" . $whose_turn . "_coins";
+            $player_coins = $gamestate[$player_num_coins];
+            if($board_data_array[$player_pos] == "starSpace"){
+                if($player_coins < 20){
+                    echo "you don't have enough coins to buy the star";
+                }else{
+                    $GLOBALS['stop'] = 1;
+                    buyStarForm();
+                }
             
+            }
+
+
             //call move forward function
             moveForward($connection);
+
+
 
             // get the remaining count from the database
             $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
@@ -810,6 +832,21 @@
         echo '</form>';
     }
 
+    function buyStarForm(){
+        
+        $pin = $_GET['pin'];
+        echo "<form action='buy_star_process.php' method='POST'>";
+        echo "<input type='hidden' name ='pin' value = '$pin'>";
+        
+        echo '<input type="radio" id = "yes" name="decision" value ="yes" >';
+        echo '<input type="radio" id = "no" name="decision" value ="no" >';
+        echo '<input type="submit" value="Go">';
+        echo '</form>';
+    }
+
+
+
+
     
     //fetches the gamestate from the database
     $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
@@ -871,11 +908,11 @@
             //form.style.display = 'block';
             //x.getElementById("rollDisplay").style.visibility = "visible";
             //
-
+            x.getElementById("rollDisplay").style.visibility = "visible";
 
             if(user_player_num == whose_turn && game_started == "1"){
                 
-                x.getElementById("rollDisplay").style.visibility = "visible";
+                
                 const form = document.getElementById('rolldiceform');
                 form.style.display = 'block';
             }
