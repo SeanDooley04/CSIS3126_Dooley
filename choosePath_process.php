@@ -2,7 +2,7 @@
 session_start();
 include("global.php");
 
-include('getNextPosFunction.php');
+include('phpFunctions.php');
 
 
 $pin = $_POST['pin'];
@@ -36,16 +36,11 @@ if($user_id == $player1_id){
 }
 $player_id_pos = "player".$user_player_num . "_pos";
 
-
-
 if ($direction == $direction1){
     $pos = $pos1;
 }elseif($direction == $direction2){
     $pos = $pos2;
 }
-
-
-
 
 $next_pos_JSON = getNextPos($pos);
 
@@ -62,67 +57,45 @@ if($count_remaining == 0){
     $board_data_JSON = $gamestate['board_data'];
     $board_data_array = json_decode($board_data_JSON, true);
     //get the player's position
-    $player_pos = $gamestate['player'. $whose_turn . "_pos"];
+    $whose_turn = $gamestate['whose_turn'];
+    $player_pos = $gamestate['player'. $whose_turn . '_pos'];
     $player_num_coins = "player" . $whose_turn . "_coins";
+    echo $player_num_coins;
     $player_coins = $gamestate[$player_num_coins];
-
-    if($board_data_array[$player_pos] == "blue"){
+    
+    if($board_data_array[$pos] == "blue"){
         echo "+5 coins";
         $player_coins += 5;
-        mysqli_query($connection, "UPDATE gamestate set $player_num_coins = '$player_coins' where game_PIN = '$pin' ");
+        mysqli_query($connection, "UPDATE gamestate set $player_num_coins = '$player_coins' where game_PIN = '$pin'");
+        echo "query runs";
     }
-    if($board_data_array[$player_pos] == "red" and $player_coins != 0){
+    if($board_data_array[$pos] == "red" and $player_coins != 0){
         echo "-2 coins";
         $player_coins -= 2;
-        mysqli_query($connection, "UPDATE gamestate set $player_num_coins = '$player_coins' where game_PIN = '$pin' ");
+        mysqli_query($connection, "UPDATE gamestate set $player_num_coins = '$player_coins' where game_PIN = '$pin'");
     }
     //increment the current_turn_num if it is the end of the 4th player's turn
     //after each player has done a turn, increment the turn number
     $current_turn_num = $gamestate['current_turn_num'];
     $turn_limit = $gamestate['turn_limit'];
-    if($whose_turn == 4 and $current_turn_num <= $turn_limit){
+
+    if ($gamestate['player2_id'] == ""){
+        $last_player = 1;
+    }elseif($gamestate['player3_id'] == ""){
+        $last_player = 2;
+    }elseif($gamestate['player4_id'] == ""){
+        $last_player = 3;
+    }else{
+        $last_player = 4;
+    }
+
+    if($whose_turn == $last_player and $current_turn_num <= $turn_limit){
         $current_turn_num += 1;
         // update the turn number in the database
-        mysqli_query($connection, "UPDATE gamestate set current_turn_num = '$current_turn_num' where game_PIN = '$pin");
+        mysqli_query($connection, "UPDATE gamestate set current_turn_num = '$current_turn_num' where game_PIN = '$pin'");
     }
 
-    nextPlayerTurn($connection);
+    nextPlayerTurn($connection, $pin);
 }
-
+//return to the game
 header("location: game_page.php?pin=". $pin);
-
-function nextPlayerTurn($connection){
-    $pin = $_GET['pin'];
-    $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
-    $gamestate = mysqli_fetch_assoc($gamestate_query);
-
-    $whose_turn = $gamestate['whose_turn'];
-
-    //determine how many players are in the game
-    $player2_id = $gamestate['player2_id'];
-    $player3_id = $gamestate['player3_id'];
-    $player4_id = $gamestate['player4_id'];
-    
-    if($player2_id == ""){
-        $num_of_players = 1;
-    }elseif($player3_id == ""){
-        $num_of_players = 2;
-    }elseif($player4_id == ""){
-        $num_of_players = 3;
-    }else{
-        $num_of_players = 4;
-    }
-
-    // determine which player has the next turn
-    if($whose_turn != $num_of_players){
-        $whose_turn += 1;
-    }else{
-        $whose_turn = 1;
-    }
-
-    $next_player_pos = $gamestate['player'.$whose_turn.'_pos'];
-    $next_pos_JSON = getNextPos($next_player_pos);
-    
-    // update whose turn and the next position acordingly
-    mysqli_query($connection, "UPDATE gamestate set whose_turn = '$whose_turn', next_pos = '$next_pos_JSON' where game_PIN = '$pin'");
-}
