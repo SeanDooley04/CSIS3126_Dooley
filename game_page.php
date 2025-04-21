@@ -4,6 +4,9 @@
     include('header.php');
     include('global.php');
     $pin = $_GET['pin'];
+
+
+    
 ?>
 
 <!--This part below is meant to stop form resubmission -->
@@ -63,12 +66,19 @@
 
             
             <?php
+
+
+
+            
             //fetches the gamestate from the database
             $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
-
             $gamestate = mysqli_fetch_assoc($gamestate_query);
             
             $count_remaining = $gamestate['count_remaining'];
+            //check if the count remaining is greater than zero, if true continue piece movement
+            if ($count_remaining > 0){
+                continueMovement($connection);
+            }
 
             $game_started = $gamestate["game_started"];
             $player1_name = $gamestate["player1_uname"];
@@ -160,8 +170,6 @@
         <?php 
             include('game_board_div.php');
         ?>
-            
-            
     </div>
 
 
@@ -180,68 +188,8 @@
         
         mysqli_query($connection, "UPDATE gamestate set count_remaining = '$roll_num', roll_num ='$roll_num' where game_PIN = '$pin'");
         continueMovement($connection);
-        
-        // update whose turn it is when the count remaining is 0
-        $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
-        $gamestate = mysqli_fetch_assoc($gamestate_query);
-        $count_remaining = $gamestate['count_remaining'];
-        $whose_turn = $gamestate['whose_turn'];
-
-        if($count_remaining == 0){
-
-            //check if the player was on a red or blue space
-            $board_data_JSON = $gamestate['board_data'];
-            $board_data_array = json_decode($board_data_JSON, true);
-            //get the player's position
-            $player_pos = $gamestate['player'. $whose_turn . "_pos"];
-            $player_num_coins = "player" . $whose_turn . "_coins";
-            $player_coins = $gamestate[$player_num_coins];
-
-
-            if($board_data_array[$player_pos] == "blue"){
-                echo "plus 5 coins";
-                $player_coins += 5;
-                mysqli_query($connection, "UPDATE gamestate set $player_num_coins = '$player_coins' where game_PIN = '$pin' ");
-            }
-            if($board_data_array[$player_pos] == "red" and $player_coins != 0){
-                echo "minus 2 coins";
-                $player_coins -= 2;
-                mysqli_query($connection, "UPDATE gamestate set $player_num_coins = '$player_coins' where game_PIN = '$pin' ");
-            }
-            
-
-
-
-            //increment the current_turn_num if it is the end of the 4th player's turn
-            //after each player has done a turn, increment the turn number
-            $current_turn_num = $gamestate['current_turn_num'];
-            $turn_limit = $gamestate['turn_limit'];
-            if($whose_turn == 4 and $current_turn_num <= $turn_limit){
-                $current_turn_num += 1;
-                // update the turn number in the database
-                mysqli_query($connection, "UPDATE gamestate set current_turn_num = '$current_turn_num' where game_PIN = '$pin'");
-            }
-            
-            // determine which player has the next turn
-            if($whose_turn != 4){
-                $whose_turn += 1;
-            }else{
-                $whose_turn = 1;
-            }
-            
-
-
-            $next_player_pos = $gamestate['player'.$whose_turn.'_pos'];
-            $next_pos_JSON = getNextPos($next_player_pos);
-            
-            // update whose turn and the next position acordingly
-            mysqli_query($connection, "UPDATE gamestate set whose_turn = '$whose_turn', next_pos = '$next_pos_JSON', roll_num = 0 where game_PIN = '$pin'");
-        }
-
-
-        
-        //crossroads are at spaces 13, 53, and 31
     }
+
     function continueMovement($connection){
         $pin = $_GET['pin'];
         $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
@@ -260,14 +208,13 @@
             $player_coins = $gamestate[$player_num_coins];
             if($board_data_array[$player_pos] == "starSpace"){
                 if($player_coins < 20){
-                    echo "you don't have enough coins to buy the star";
+                    echo "you don't have enough coins to buy the star <br>";
                 }else{
                     $GLOBALS['stop'] = 1;
                     buyStarForm();
                 }
             
             }
-
 
             //call move forward function
             if($GLOBALS['stop'] != 1){
@@ -280,11 +227,86 @@
             $count_remaining = $gamestate['count_remaining'];
 
         }
+        // update whose turn it is when the count remaining is 0
+        $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
+        $gamestate = mysqli_fetch_assoc($gamestate_query);
+        $count_remaining = $gamestate['count_remaining'];
+        $whose_turn = $gamestate['whose_turn'];
+
+        if($count_remaining == 0){
+
+            //check if the player was on a red or blue space
+            $board_data_JSON = $gamestate['board_data'];
+            $board_data_array = json_decode($board_data_JSON, true);
+            //get the player's position
+            $player_pos = $gamestate['player'. $whose_turn . "_pos"];
+            $player_num_coins = "player" . $whose_turn . "_coins";
+            $player_coins = $gamestate[$player_num_coins];
+
+
+            if($board_data_array[$player_pos] == "blue"){
+                echo "+5 coins";
+                $player_coins += 5;
+                mysqli_query($connection, "UPDATE gamestate set $player_num_coins = '$player_coins' where game_PIN = '$pin' ");
+            }
+            if($board_data_array[$player_pos] == "red" and $player_coins != 0){
+                echo "-2 coins";
+                $player_coins -= 2;
+                mysqli_query($connection, "UPDATE gamestate set $player_num_coins = '$player_coins' where game_PIN = '$pin' ");
+            }
+
+
+            //increment the current_turn_num if it is the end of the 4th player's turn
+            //after each player has done a turn, increment the turn number
+            $current_turn_num = $gamestate['current_turn_num'];
+            $turn_limit = $gamestate['turn_limit'];
+            if($whose_turn == 4 and $current_turn_num <= $turn_limit){
+                $current_turn_num += 1;
+                // update the turn number in the database
+                mysqli_query($connection, "UPDATE gamestate set current_turn_num = '$current_turn_num' where game_PIN = '$pin'");
+            }
+            nextPlayerTurn($connection);
+        }
     }
 
 
-    //set up game id for multiple games
-    //store next pos in database
+
+    function nextPlayerTurn($connection){
+        $pin = $_GET['pin'];
+        $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
+        $gamestate = mysqli_fetch_assoc($gamestate_query);
+
+        $whose_turn = $gamestate['whose_turn'];
+
+        //determine how many players are in the game
+        $player2_id = $gamestate['player2_id'];
+        $player3_id = $gamestate['player3_id'];
+        $player4_id = $gamestate['player4_id'];
+        
+        if($player2_id == ""){
+            $num_of_players = 1;
+        }elseif($player3_id == ""){
+            $num_of_players = 2;
+        }elseif($player4_id == ""){
+            $num_of_players = 3;
+        }else{
+            $num_of_players = 4;
+        }
+
+        // determine which player has the next turn
+        if($whose_turn != $num_of_players){
+            $whose_turn += 1;
+        }else{
+            $whose_turn = 1;
+        }
+
+        $next_player_pos = $gamestate['player'.$whose_turn.'_pos'];
+        $next_pos_JSON = getNextPos($next_player_pos);
+        
+        // update whose turn and the next position acordingly
+        mysqli_query($connection, "UPDATE gamestate set whose_turn = '$whose_turn', next_pos = '$next_pos_JSON' where game_PIN = '$pin'");
+    }
+
     function moveForward($connection){
         $pin = $_GET['pin'];
         $gamestate_query = mysqli_query($connection, "select * from gamestate where game_PIN = '$pin'");
@@ -325,9 +347,8 @@
             $GLOBALS['stop'] = 1;
             choosePathForm($next_pos_Array);
         }
-        
-
     }
+
     function getNextPos($pos){
         
         //connect with the sql in gamestate
@@ -386,7 +407,7 @@
         echo '</form>';
     }
 
-    function buyStarForm(){
+    function buyStarForm(): void{
         
         $pin = $_GET['pin'];
         echo "<h3>Do you want to buy a star for 20 coins?</h3>";
