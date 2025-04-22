@@ -26,6 +26,7 @@
 <p><a href='game_page.php'>Go to game board(for testing)</a></p><br>
 
 <h1>Game Instructions </h1>
+<!-- not every feature mentioned is implemented
 <p>
 -	at the start of the game each player rolls a dice to see who moves first, the highest number goes first<br /> 
 -	after each player has had a turn the players must answer a random trivia question. Whoever selects the correct answer first gets 4 coins, second gets 3 coins, third gets 2 coins, you get 0 for an incorrect answer.<br/>
@@ -37,6 +38,19 @@
 -	Landing on a blues space gives you 3 coins<br />
 -	The player with the most stars at the end of the game wins<br />
 </p>
+-->
+<p>
+-	Turn order (player1, player2, player3, player4, back to player 1), can vary based on how many players are in the game<br>
+-	The roll dice button appears when it is your turn<br>
+-	Click the roll dice button to move your game piece<br>
+-	You can choose a direction to go when you reach a split path<br>
+-	after each player has had a turn the current turn number goes up by 1<br>
+-	Landing on red spaces takes away 2 coins<br>
+-	Landing on a blue space gives you 5 coins<br>
+-	Players can spend 20 coins to buy a star when they reach the star space<br>
+-	At certain intersections the player can choose between multiple paths<br>
+-	The player with the most stars when the turn limit is reached wins<br>
 
+</p>
 </body>
 </html>
