@@ -93,7 +93,7 @@ function continueMovement($connection){
             $last_player = 4;
         }
 
-        if($whose_turn == $last_player and $current_turn_num <= $turn_limit){
+        if($whose_turn == $last_player and $current_turn_num < $turn_limit){
             $current_turn_num += 1;
             // update the turn number in the database
             mysqli_query($connection, "UPDATE gamestate set current_turn_num = '$current_turn_num' where game_PIN = '$pin'");

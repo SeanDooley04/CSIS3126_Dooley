@@ -21,6 +21,7 @@
         echo "<p><a href='create_game.php'>Create Game</a></p><br>";
         
     }
+
 ?>
 <!--I will remove this when I'm done but I'm keeping it so I can have easier access to the reset button on the game page -->
 <p><a href='game_page.php'>Go to game board(for testing)</a></p><br>
