@@ -177,7 +177,8 @@
             x.getElementById("rollDisplay").innerHTML = "Dice number: " + roll_num + " remaining: " + count_remaining;
             x.getElementById("rollDisplay").style.visibility = "visible";
 
-            if(user_player_num == whose_turn && game_started == "1"){
+            //
+            if(user_player_num == whose_turn && game_started == "1" && count_remaining == "0"){
                 const form = document.getElementById('rolldiceform');
                 form.style.display = 'block';
             }
